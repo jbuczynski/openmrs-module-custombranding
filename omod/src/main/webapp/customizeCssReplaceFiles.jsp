@@ -8,11 +8,20 @@
         <span style="float: right">
             <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
         </span>
-    	<b><spring:message code="htmlformentry.manage.header" /></b>
-    </div>
 
-	<!--<textarea name="${status.expression}" rows="3" cols="40" type="_moz">${status.value}</textarea>-->
-	<textarea name="Css file content" rows="3" cols="40" type="_moz">Content ...</textarea>
+    </div>
+    ${cssFileNames}
+    <form:select path="visitTypesToClose" multiple="true" items="${visitTypes}" itemLabel="name" />
+	<select id="cssFilesList" multiple="multiple">
+        <c:forEach var="cssFile" items="${cssFileNames}">
+                 <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
+        </c:forEach>
+
+
+      <option value="saab">Saab</option>
+      <option value="mercedes">Mercedes</option>
+      <option value="audi">Audi</option>
+    </select>
 
 
 

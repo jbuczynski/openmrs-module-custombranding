@@ -15,5 +15,18 @@
 	<textarea name="Css file content" rows="3" cols="40" type="_moz">Content ...</textarea>
 
 
+    <form:form action="/switchCssFile" modelAttribute="cssFileContent">
+
+        <form:select path="breed">
+            <form:options>
+                    <c:forEach var="cssFile" items="${cssFileNames}">
+                             <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
+                    </c:forEach>
+             <form:options>
+             items="${allBreeds}" itemValue="breedId" itemLabel="breedName" />
+        </form:select>
+
+    </form:form>
+
 
 	<%@ include file="/WEB-INF/template/footer.jsp"%>
