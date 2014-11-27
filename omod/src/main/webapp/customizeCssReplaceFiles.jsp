@@ -32,6 +32,8 @@
                 <input type="submit" value="Replace" />
             </form>
        </div>
+
+    <input size="50" type="file" name="messageFile"/>
     <form id="replace">
         <input type="submit" value="Replace" />
     </form>

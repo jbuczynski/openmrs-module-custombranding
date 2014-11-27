@@ -43,7 +43,7 @@
     </select>
     <br>
 
-     <div class="box">
+     <div >
      <table>
          <tr>
              <td>
