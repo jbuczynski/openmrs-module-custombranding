@@ -8,12 +8,12 @@
 
 
 
-    div class="boxHeader">
-        <span style="float: right">
-            <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
-        </span>
-
-    </div>
+    <div class="boxHeader">
+         <span style="float: right">
+             <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
+         </span>
+     	<b><spring:message code="custombranding.replace.header" /></b>
+     </div>
     ${cssFileNames}
 
 
@@ -24,6 +24,17 @@
 
     </select>
 
+     <div class="box">
+            <form id="uploadCssFile"
+                  action="custombranding.form?id=orgUrl&action=upload"
+                  method="post" enctype="multipart/form-data">
+                <input size="50" type="text" value="${orgUrl}"  />
+                <input type="submit" value="Replace" />
+            </form>
+       </div>
+    <form id="replace">
+        <input type="submit" value="Replace" />
+    </form>
 
 
 	<%@ include file="/WEB-INF/template/footer.jsp"%>

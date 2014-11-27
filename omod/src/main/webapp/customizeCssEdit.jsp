@@ -28,19 +28,39 @@
         <span style="float: right">
             <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
         </span>
-    	<b><spring:message code="htmlformentry.manage.header" /></b>
+    	<b><spring:message code="custombranding.edit.header" /></b>
     </div>
 
 	<!--<textarea id="" name="${status.expression}" rows="3" cols="40" type="_moz">${status.value}</textarea>-->
 	<textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
 
 
-    <select id="cssFilesList" multiple="multiple" items="${cssFilesList}" onchange="ajaxRequest()">
+    <select id="cssFilesList" size="20" items="${cssFilesList}" onchange="ajaxRequest()">
         <c:forEach var="cssFile" items="${cssFileNames}">
                  <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
         </c:forEach>
 
     </select>
+    <br>
+
+     <div class="box">
+     <table>
+         <tr>
+             <td>
+                 <form id="save">
+                     <input type="submit" value="save" />
+                 </form>
+             </td>
+             <td>
+                  <form id="validate">
+                     <input type="submit" value="validate" />
+                 </form>
+             </td>
+         </tr>
+     </table>
+
+
+     </div>
 
 
 	<%@ include file="/WEB-INF/template/footer.jsp"%>
