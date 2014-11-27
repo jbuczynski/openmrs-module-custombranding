@@ -3,30 +3,44 @@
     <%@ include file="/WEB-INF/template/header.jsp"%>
 
     <%@ include file="localHeader.jsp" %>
+<script src="http://code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+<script>
+  function ajaxRequest() {
 
-    div class="boxHeader">
+        var text = $("#cssFilesList option:selected").text();
+        $.ajax({
+                type: 'GET',
+                url: "/openmrs/module/custombranding/CssContent.form?name=" + text,
+                dataType: 'text',
+                async: true,
+                success: function(response) {
+                      $('#contentBox').text(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.status + " " + jqXHR.responseText);
+                }
+        });
+}
+</script>
+
+    <div class="boxHeader">
         <span style="float: right">
             <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
         </span>
     	<b><spring:message code="htmlformentry.manage.header" /></b>
     </div>
 
-	<!--<textarea name="${status.expression}" rows="3" cols="40" type="_moz">${status.value}</textarea>-->
-	<textarea name="Css file content" rows="3" cols="40" type="_moz">Content ...</textarea>
+	<!--<textarea id="" name="${status.expression}" rows="3" cols="40" type="_moz">${status.value}</textarea>-->
+	<textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
 
 
-    <form:form action="/switchCssFile" modelAttribute="cssFileContent">
+    <select id="cssFilesList" multiple="multiple" items="${cssFilesList}" onchange="ajaxRequest()">
+        <c:forEach var="cssFile" items="${cssFileNames}">
+                 <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
+        </c:forEach>
 
-        <form:select path="breed">
-            <form:options>
-                    <c:forEach var="cssFile" items="${cssFileNames}">
-                             <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
-                    </c:forEach>
-             <form:options>
-             items="${allBreeds}" itemValue="breedId" itemLabel="breedName" />
-        </form:select>
-
-    </form:form>
+    </select>
 
 
 	<%@ include file="/WEB-INF/template/footer.jsp"%>
