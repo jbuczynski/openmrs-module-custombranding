@@ -26,16 +26,15 @@
 
     <div class="boxHeader">
         <span style="float: right">
-            <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="general.toggle.retired"/></a>
+            <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="custombranding.boxheader.toogle"/></a>
         </span>
     	<b><spring:message code="custombranding.edit.header" /></b>
     </div>
 
-	<!--<textarea id="" name="${status.expression}" rows="3" cols="40" type="_moz">${status.value}</textarea>-->
 	<textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
 
 
-    <select id="cssFilesList" size="20" items="${cssFilesList}" onchange="ajaxRequest()">
+    <select id="cssFilesList" size="18" items="${cssFilesList}" onchange="ajaxRequest()">
         <c:forEach var="cssFile" items="${cssFileNames}">
                  <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
         </c:forEach>
