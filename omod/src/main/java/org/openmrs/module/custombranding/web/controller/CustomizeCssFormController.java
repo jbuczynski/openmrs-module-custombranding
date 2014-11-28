@@ -1,6 +1,13 @@
 package org.openmrs.module.custombranding.web.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.custombranding.CssFile;
+import org.openmrs.module.custombranding.CssFileService;
+import org.openmrs.module.custombranding.CustomizeCssUtils;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -11,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,9 +41,10 @@ import java.util.Map;
  * <p/>
  */
 @Controller
-@RequestMapping(value="/module/custombranding", method=RequestMethod.GET)
+@RequestMapping(value="/module/custombranding")
 public class CustomizeCssFormController {
 
+	protected final Log log = LogFactory.getLog(getClass());
 	private List<String> cssFileNames;
 	private HashMap<String,String> cssFileMap;
 	private String realPath;
@@ -58,7 +67,8 @@ public class CustomizeCssFormController {
 
 
 	@RequestMapping(value="/customizeCssReplaceFiles.form", method=RequestMethod.GET)
-	public void handleCssReplacing( HttpServletRequest request, ModelMap model  ){
+	public void handleCssReplacing(HttpServletRequest request, ModelMap model  ){
+
 		realPath = request.getSession().getServletContext().getRealPath("");
 		File dir = new File(realPath);
 		getCsFiles(dir);
@@ -123,55 +133,62 @@ public class CustomizeCssFormController {
 		}
 	}
 
-	@RequestMapping(value="/replaceCssFile", method=RequestMethod.POST)
-	public void replaceCssFile( @RequestParam(value="name", defaultValue="none") String name, HttpServletRequest request) {
+	@RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
+	public void submitDepartment( ModelMap model,HttpServletRequest request,
+								   @RequestParam(required = true, value = "action") String action,
+								    BindingResult errors, @PathVariable String pathURL) {
 
-		realPath = request.getSession().getServletContext().getRealPath("");
-		File dir = new File(realPath);
-		//getCsFiles(dir);
+		MessageSourceService mss = Context.getMessageSourceService();
 
-		//model.addAttribute("cssFileNames", cssFileNames);
-		//model.addAttribute("cssFileMap", cssFileMap);
-
+		if (!Context.isAuthenticated()) {
+			errors.reject("custombranding.auth.required");
+		} else if(mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
+			updateCssFile(request, model, errors, pathURL);
+		}
+		else if(mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
+			deleteCssFile( request, model, errors, pathURL );
+		}
 	}
 
-	@RequestMapping(value="/updateCssFile", method=RequestMethod.POST)
-	public void updateCssFile( @RequestParam(value="name", defaultValue="none") String name, HttpServletRequest request) {
+	private String updateCssFile( HttpServletRequest request, ModelMap model, BindingResult errors, String pathURL ) {
 
-		String realPath = request.getSession().getServletContext().getRealPath("");
-		File dir = new File(realPath);
-		//getCsFiles(dir);
+		MessageSourceService mss = Context.getMessageSourceService();
+		CssFileService fileService = Context.getService(CssFileService.class);
 
-		//model.addAttribute("cssFileNames", cssFileNames);
-		//model.addAttribute("cssFileMap", cssFileMap);
 
+		try {
+			CssFile cssFile = fileService.saveCssFile(currentFile);
+			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
+		}
+		catch (Exception ex) {
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
+			log.error("Failed to delete department", ex);
+
+		}
+		//return CustomizeCssUtils.getUrl(request);
+		return pathURL;
 	}
 
-//	@RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
-//	public String submitDepartment(WebRequest request, HttpSession httpSession, ModelMap model,
-//								   @RequestParam(required = false, value = "action") String action,
-//								   @ModelAttribute("cssFile") CssFile department, BindingResult errors) {
-//
-//		MessageSourceService mss = Context.getMessageSourceService();
-//		DepartmentService departmentService = Context.getService(DepartmentService.class);
-//		if (!Context.isAuthenticated()) {
-//			errors.reject("department.auth.required");
-//		} else if (mss.getMessage("department.purgeDepartment").equals(action)) {
-//			try {
-//				departmentService.purgeDepartment(department);
-//				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "department.delete.success");
-//				return "redirect:departmentList.list";
-//			}
-//			catch (Exception ex) {
-//				httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "department.delete.failure");
-//				log.error("Failed to delete department", ex);
-//				return "redirect:departmentForm.form?departmentId=" + request.getParameter("departmentId");
-//			}
-//		} else {
-//			departmentService.saveDepartment(department);
-//			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, "department.saved");
-//		}
-//		return "redirect:departmentList.list";
-//	}
+
+	private String deleteCssFile( HttpServletRequest request, ModelMap model, BindingResult errors, String pathURL  ) {
+
+		//String realPath = request.getSession().getServletContext().getRealPath("");
+		//File dir = new File(realPath);
+		//getCsFiles(dir);
+
+		MessageSourceService mss = Context.getMessageSourceService();
+		CssFileService fileService = Context.getService(CssFileService.class);
+
+		try {
+			fileService.purgeCssFile(currentFile);
+			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.delete.success");
+		}
+		catch (Exception ex) {
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.delete.failure");
+			log.error("Failed to delete department", ex);
+		}
+		//return CustomizeCssUtils.getUrl(request);
+		return pathURL;
+	}
 
 }

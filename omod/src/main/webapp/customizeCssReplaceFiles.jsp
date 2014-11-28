@@ -26,10 +26,10 @@
         Upload your css file: <input size="50" type="file" name="cssFile"/>
      <input type="submit" value="Replace" />
      </form>
-        <form id="addCssFileForm">
-
-            <input type="submit" value="Add" />
-        </form>
+    <form id="save" action="/openmrs/module/custombranding/dbRequest.form" action="POST">
+          <input type="hidden" name="action" value="updateCssFile">
+         <input type="submit" value="add"  name="updateCssFile"/>
+     </form>
 
 	<select id="cssFilesList" multiple="multiple" items="${cssFilesList}">
         <c:forEach var="cssFile" items="${cssFileNames}">

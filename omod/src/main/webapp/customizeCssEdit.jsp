@@ -23,6 +23,7 @@
         });
 }
 </script>
+ <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 
     <div class="boxHeader">
         <span style="float: right">
@@ -46,12 +47,14 @@
      <table>
          <tr>
              <td>
-                 <form id="save">
-                     <input type="submit" value="save" />
+                 <form id="save" action="/openmrs/module/custombranding/dbRequest.form" method="POST">
+                     <input type="hidden" name="action" value="updateCssFile">
+                     <input type="submit" value="save"  name="updateCssFile"/>
                  </form>
              </td>
              <td>
                   <form id="validate">
+                     <input type="hidden" name="action" value="validate">
                      <input type="submit" value="validate" />
                  </form>
              </td>
