@@ -133,24 +133,23 @@ public class CustomizeCssFormController {
 		}
 	}
 
-	@RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
+    @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
 	public void submitDepartment( ModelMap model,HttpServletRequest request,
-								   @RequestParam(required = true, value = "action") String action,
-								    BindingResult errors, @PathVariable String pathURL) {
+								   @RequestParam(required = true, value = "action") String action) {
 
 		MessageSourceService mss = Context.getMessageSourceService();
 
 		if (!Context.isAuthenticated()) {
-			errors.reject("custombranding.auth.required");
+			//errors.reject("custombranding.auth.required");
 		} else if(mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
-			updateCssFile(request, model, errors, pathURL);
+			updateCssFile(request, model);
 		}
 		else if(mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
-			deleteCssFile( request, model, errors, pathURL );
+			deleteCssFile( request, model );
 		}
 	}
 
-	private String updateCssFile( HttpServletRequest request, ModelMap model, BindingResult errors, String pathURL ) {
+	private String updateCssFile( HttpServletRequest request, ModelMap model ) {
 
 		MessageSourceService mss = Context.getMessageSourceService();
 		CssFileService fileService = Context.getService(CssFileService.class);
@@ -165,16 +164,14 @@ public class CustomizeCssFormController {
 			log.error("Failed to delete department", ex);
 
 		}
-		//return CustomizeCssUtils.getUrl(request);
-		return pathURL;
+		return CustomizeCssUtils.getUrl(request);
+		//return pathURL;
 	}
 
 
-	private String deleteCssFile( HttpServletRequest request, ModelMap model, BindingResult errors, String pathURL  ) {
+	private String deleteCssFile( HttpServletRequest request, ModelMap model ) {
 
-		//String realPath = request.getSession().getServletContext().getRealPath("");
-		//File dir = new File(realPath);
-		//getCsFiles(dir);
+
 
 		MessageSourceService mss = Context.getMessageSourceService();
 		CssFileService fileService = Context.getService(CssFileService.class);
@@ -187,8 +184,8 @@ public class CustomizeCssFormController {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.delete.failure");
 			log.error("Failed to delete department", ex);
 		}
-		//return CustomizeCssUtils.getUrl(request);
-		return pathURL;
+		return CustomizeCssUtils.getUrl(request);
+		//return pathURL;
 	}
 
 }
