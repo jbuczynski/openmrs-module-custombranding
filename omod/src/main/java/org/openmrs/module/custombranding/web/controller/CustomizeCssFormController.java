@@ -163,10 +163,12 @@ public class CustomizeCssFormController {
 			currentFile.setId(tmp.getId());
 			CssFile cssFile = fileService.saveCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
+		} catch (org.hibernate.NonUniqueResultException e) {
+			log.error("In database exist multiple css files with same name!", e);
 		}
 		catch (Exception ex) {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
-			log.error("Failed to delete department", ex);
+			log.error("Failed to delete css file", ex);
 
 		}
 
