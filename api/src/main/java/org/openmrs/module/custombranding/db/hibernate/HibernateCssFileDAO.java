@@ -39,6 +39,12 @@ public class HibernateCssFileDAO implements CssFileDAO {
 	}
 
 	@Override
+	public CssFile getCssFileByName(String name)  {
+		Query q = sessionFactory.getCurrentSession().createQuery("from CssFile f where f.name = :name");
+		return (CssFile) q.setString("name", name).uniqueResult();
+	}
+
+	@Override
 	public CssFile saveCssFile(CssFile CssFile) {
 		sessionFactory.getCurrentSession().saveOrUpdate(CssFile);
 		return CssFile;

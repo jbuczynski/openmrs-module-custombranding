@@ -27,6 +27,15 @@ public interface CssFileDAO {
 	 */
 	public CssFile getCssFileByUuid(String uuid) ;
 
+
+	/**
+	 * Retrieves the CssFile referenced by name
+	 *
+	 * @param name
+	 * @return CssFile
+	 */
+	public CssFile getCssFileByName(String name) ;
+
     /**
      * Saves an CssFile to the database
      * 

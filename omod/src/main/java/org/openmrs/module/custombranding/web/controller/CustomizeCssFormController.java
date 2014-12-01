@@ -136,15 +136,19 @@ public class CustomizeCssFormController {
 		MessageSourceService mss = Context.getMessageSourceService();
 		String redirect = "redirect:/module/custombranding/customizeCssEdit.form";
 
-		if (!Context.isAuthenticated()) {
-			//errors.reject("custombranding.auth.required");
-		} else if(mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
-			redirect = updateCssFile(request, model);
-		}
-		else if(mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
-			redirect = deleteCssFile( request, model );
-		}
+			if (!Context.isAuthenticated()) {
+				//errors.reject("custombranding.auth.required");
+			} else if (mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
+				redirect = updateCssFile(request, model);
+			} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
+				redirect = deleteCssFile(request, model);
+			}
 
+		try {
+			CustomizeCssUtils.overrideDefaultCssFilesWithCustom();
+		}  catch (IOException e) {
+			log.error("Error while manipulating css files", e);
+		}
 		return redirect;
 	}
 
@@ -155,6 +159,8 @@ public class CustomizeCssFormController {
 
 
 		try {
+			CssFile tmp = fileService.getCssFileByName(currentFile.getName());
+			currentFile.setId(tmp.getId());
 			CssFile cssFile = fileService.saveCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
 		}
@@ -163,7 +169,7 @@ public class CustomizeCssFormController {
 			log.error("Failed to delete department", ex);
 
 		}
-		//return CustomizeCssUtils.getUrl(request);
+
 		return "redirect:/module/custombranding/customizeCssEdit.form";
 	}
 
@@ -176,6 +182,7 @@ public class CustomizeCssFormController {
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
+
 			fileService.purgeCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.delete.success");
 		}
@@ -183,9 +190,9 @@ public class CustomizeCssFormController {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.delete.failure");
 			log.error("Failed to delete department", ex);
 		}
-		//return CustomizeCssUtils.getUrl(request);
+
 		return "redirect:/module/custombranding/customizeCssReplaceFiles.form";
-		//return pathURL;
+
 	}
 
 	private void getCsFiles(File dir, Boolean recursive) {

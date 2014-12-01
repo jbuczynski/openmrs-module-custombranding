@@ -34,6 +34,16 @@ public interface CssFileService extends OpenmrsService {
 	public CssFile getCssFileByUuid(String uuid);
 
 	/**
+	 * Retrieves the CssFile with the specified name
+	 *
+	 * @param uuid
+	 * @return the CssFile with the given name
+	 *
+	 */
+	@Transactional(readOnly=true)
+	public CssFile getCssFileByName(String name);
+
+	/**
 	 * Retrieves all CssFiles in the system
 
 	 * @return a list of all CssFiles in the system

@@ -49,6 +49,11 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 	}
 
 	@Override
+	public CssFile getCssFileByName(String name) {
+		return dao.getCssFileByName(name);
+	}
+
+	@Override
 	public CssFile getCssFileByUuid(String uuid)  {
 		return dao.getCssFileByUuid(uuid);
 	}
