@@ -59,7 +59,7 @@
                     <property name="transactionManager"><ref bean="transactionManager"/></property>
                     <property name="target">
                         <bean class="org.openmrs.module.custombranding.impl.CssFileServiceImpl">
-                            <property name="CssFileDAO">
+                            <property name="dao">
                                 <bean class="org.openmrs.module.custombranding.db.hibernate.HibernateCssFileDAO">
                                     <property name="sessionFactory"><ref bean="sessionFactory"/></property>
                                 </bean>

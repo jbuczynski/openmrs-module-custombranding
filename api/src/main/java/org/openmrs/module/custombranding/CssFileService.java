@@ -11,6 +11,7 @@ import java.util.List;
  * Defines the services provided by the CssFile Entry module
  *
  */
+@Transactional
 public interface CssFileService extends OpenmrsService {
 
 	/**

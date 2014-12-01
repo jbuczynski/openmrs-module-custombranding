@@ -134,19 +134,22 @@ public class CustomizeCssFormController {
 	}
 
     @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
-	public void submitDepartment( ModelMap model,HttpServletRequest request,
+	public String submitDepartment( ModelMap model,HttpServletRequest request,
 								   @RequestParam(required = true, value = "action") String action) {
 
 		MessageSourceService mss = Context.getMessageSourceService();
+		String redirect = "redirect:/module/custombranding/customizeCssEdit.form";
 
 		if (!Context.isAuthenticated()) {
 			//errors.reject("custombranding.auth.required");
 		} else if(mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
-			updateCssFile(request, model);
+			redirect = updateCssFile(request, model);
 		}
 		else if(mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
-			deleteCssFile( request, model );
+			redirect = deleteCssFile( request, model );
 		}
+
+		return redirect;
 	}
 
 	private String updateCssFile( HttpServletRequest request, ModelMap model ) {
@@ -164,8 +167,8 @@ public class CustomizeCssFormController {
 			log.error("Failed to delete department", ex);
 
 		}
-		return CustomizeCssUtils.getUrl(request);
-		//return pathURL;
+		//return CustomizeCssUtils.getUrl(request);
+		return "redirect:/module/custombranding/customizeCssEdit.form";
 	}
 
 
@@ -184,7 +187,8 @@ public class CustomizeCssFormController {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.delete.failure");
 			log.error("Failed to delete department", ex);
 		}
-		return CustomizeCssUtils.getUrl(request);
+		//return CustomizeCssUtils.getUrl(request);
+		return "redirect:/module/custombranding/customizeCssReplaceFiles.form";
 		//return pathURL;
 	}
 

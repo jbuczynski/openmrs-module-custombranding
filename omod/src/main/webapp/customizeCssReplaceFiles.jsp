@@ -26,7 +26,7 @@
         Upload your css file: <input size="50" type="file" name="cssFile"/>
      <input type="submit" value="Replace" />
      </form>
-    <form id="save" action="/openmrs/module/custombranding/dbRequest.form" action="POST">
+    <form id="save" action="/openmrs/module/custombranding/dbRequest.form" method="POST">
           <input type="hidden" name="action" value="updateCssFile">
          <input type="submit" value="add"  name="updateCssFile"/>
      </form>
@@ -37,6 +37,6 @@
         </c:forEach>
 
     </select>
-     </fieldset>
+    </fieldset>
 
 	<%@ include file="/WEB-INF/template/footer.jsp"%>

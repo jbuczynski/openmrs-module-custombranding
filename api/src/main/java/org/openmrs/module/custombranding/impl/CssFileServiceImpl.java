@@ -27,6 +27,7 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 	 * directly to the database, so we use an instance variable here that will be reset whenever
 	 * the system is restarted or the module is reloaded.
 	 */
+
 	private boolean nameAndDescriptionMigrationDone = false;
 
 	/**
@@ -36,6 +37,10 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 	 */
 	public void setDao(CssFileDAO dao) {
 		this.dao = dao;
+	}
+
+	public CssFileDAO getDao() {
+		return dao;
 	}
 
 	@Override

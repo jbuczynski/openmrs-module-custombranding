@@ -52,8 +52,7 @@ public class HibernateCssFileDAO implements CssFileDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<CssFile> getAllCssFiles() {
-		Query query = sessionFactory.getCurrentSession().createQuery("from CssFile order by form.name asc");
-		return (List<CssFile>) query.list();
+		return sessionFactory.getCurrentSession().createCriteria(CssFile.class).list();
 	}
 
 	@Override
