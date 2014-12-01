@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,11 +30,13 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * The controller for previewing a HtmlForm by loading the xml file that defines that HtmlForm from
@@ -49,6 +52,7 @@ public class CustomizeCssFormController {
 	private HashMap<String,String> cssFileMap;
 	private String realPath;
 	private CssFile currentFile = new CssFile();
+	private Boolean lastRecursionToogle = false;
 
 
 	@RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
@@ -56,7 +60,7 @@ public class CustomizeCssFormController {
 
 		realPath = request.getSession().getServletContext().getRealPath("");
 		File dir = new File(realPath);
-		getCsFiles(dir);
+		getCsFiles(dir, lastRecursionToogle);
 
 		model.addAttribute("curreCssFile", currentFile);
 		model.addAttribute("cssFileNames", cssFileNames);
@@ -71,36 +75,13 @@ public class CustomizeCssFormController {
 
 		realPath = request.getSession().getServletContext().getRealPath("");
 		File dir = new File(realPath);
-		getCsFiles(dir);
+		getCsFiles(dir, lastRecursionToogle);
 
 		model.addAttribute("curreCssFile", currentFile);
 		model.addAttribute("cssFileNames", cssFileNames);
 		model.addAttribute("cssFileMap", cssFileMap);
 	}
 
-	private void getCsFiles(File dir) {
-		cssFileMap = new HashMap<String, String>();
-		cssFileNames = new LinkedList<String>();
-		FileFilter urlFilter = new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				//if (file.isDirectory()) {
-				//	return true; // to recursive
-				//}
-				return file.getName().endsWith(".css"); // return .url files
-			}
-		};
-		File[] tmp = dir.listFiles(urlFilter);
-		if(tmp != null) {
-
-			for (final File fileEntry : tmp) { // listFiles using filter
-				String fileName = fileEntry.getName();
-				// match file names w/o extension
-				cssFileMap.put(fileName, dir.getAbsolutePath());
-				cssFileNames.add(fileName);
-			}
-		}
-	}
 
 	@RequestMapping(value="/CssContent", method=RequestMethod.GET)
 	public @ResponseBody String getCssFileContent(@RequestParam(value="name", defaultValue="none") String name, HttpServletRequest request) throws IOException {
@@ -131,6 +112,21 @@ public class CustomizeCssFormController {
 		else {
 			return "No such file";
 		}
+	}
+
+	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
+	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request, ModelMap model)  {
+
+		realPath = request.getSession().getServletContext().getRealPath("");
+		File dir = new File(realPath);
+		lastRecursionToogle = !lastRecursionToogle;
+		getCsFiles(dir, lastRecursionToogle);
+
+		model.addAttribute("curreCssFile", currentFile);
+		model.addAttribute("cssFileNames", cssFileNames);
+		model.addAttribute("cssFileMap", cssFileMap);
+
+		return cssFileMap;
 	}
 
     @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
@@ -190,6 +186,37 @@ public class CustomizeCssFormController {
 		//return CustomizeCssUtils.getUrl(request);
 		return "redirect:/module/custombranding/customizeCssReplaceFiles.form";
 		//return pathURL;
+	}
+
+	private void getCsFiles(File dir, Boolean recursive) {
+
+		cssFileMap = new HashMap<String, String>();
+		cssFileNames = new LinkedList<String>();
+
+		FileFilter urlFilter = new FileFilter() {
+			@Override
+			public boolean accept(File file) {
+				if (file.isDirectory()) {
+					return true;
+				}
+				return file.getName().endsWith(".css"); // return .url files
+			}
+		};
+
+		List<File> allFiles = new ArrayList<File>();
+		Queue<File> dirs = new LinkedList<File>();
+		dirs.add(dir);
+		while (!dirs.isEmpty()) {
+			for (File f : dirs.poll().listFiles(urlFilter)) {
+				if (f.isDirectory() && recursive) {
+					dirs.add(f);
+				} else if (f.isFile()) {
+					allFiles.add(f);
+					cssFileMap.put(f.getName(), dir.getAbsolutePath());
+					cssFileNames.add(f.getName());
+				}
+			}
+		}
 	}
 
 }

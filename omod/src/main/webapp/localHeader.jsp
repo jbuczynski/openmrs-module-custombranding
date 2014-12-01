@@ -12,4 +12,5 @@
 			<spring:message code="custombranding.menu.replace"/>
 		</a>
 	</li>
+
 </ul>

@@ -29,7 +29,7 @@ public class CustomizeCssUtils {
 
 		for(CssFile cssf : allDbFiles) {
 
-			File f = new File(cssf.getPath());
+			File f = new File(cssf.getPath() + "/" + cssf.getName());
 			if(!f.isDirectory()) {
 				FileWriter writer = new FileWriter(f, false); //override file
 				// false to overwrite.
