@@ -47,6 +47,26 @@
             });
         }
 
+        function dbRequest(action) {
+
+                    $.ajax({
+                            type: 'POST',
+                            url: "/openmrs/module/custombranding/dbRequest.form",
+                            dataType: 'text',
+                            async: true,
+                            data: {
+                                    'action': action,
+                                    'content':  $('#contentBox').text
+                                    },
+                            success: function(response) {
+                                 }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                alert(jqXHR.status + " " + jqXHR.responseText);
+                            }
+                    });
+                }
+
 
 </script>
  <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
@@ -73,10 +93,7 @@
      <table>
          <tr>
              <td>
-                 <form id="save" action="/openmrs/module/custombranding/dbRequest.form" method="POST">
-                     <input type="hidden" name="action" value="updateCssFile">
-                     <input type="submit" value="save"  name="updateCssFile"/>
-                 </form>
+                 <button onclick="dbRequest(updateCssFile)">Save</button>
              </td>
              <td>
                   <form id="validate">

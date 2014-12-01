@@ -160,7 +160,9 @@ public class CustomizeCssFormController {
 
 		try {
 			CssFile tmp = fileService.getCssFileByName(currentFile.getName());
-			currentFile.setId(tmp.getId());
+            if(tmp != null) {
+			    currentFile.setId(tmp.getId());
+            }
 			CssFile cssFile = fileService.saveCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
 		} catch (org.hibernate.NonUniqueResultException e) {
