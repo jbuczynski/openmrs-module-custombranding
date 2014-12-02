@@ -36,6 +36,16 @@ public interface CssFileDAO {
 	 */
 	public CssFile getCssFileByName(String name) ;
 
+
+    /**
+     * Retrieves the CssFile referenced by nameAndPath
+     *
+     * @param nameAndPath
+     * @return CssFile
+     */
+    public CssFile getCssFileByNameAndPath(String nameAndPath) ;
+
+
     /**
      * Saves an CssFile to the database
      * 

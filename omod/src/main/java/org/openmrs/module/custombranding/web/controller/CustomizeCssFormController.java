@@ -85,6 +85,7 @@ public class CustomizeCssFormController {
 				currentFile.setName(name);
 				currentFile.setContent(content);
 				currentFile.setPath(cssFileMap.get(name));
+                currentFile.setNameAndPath(currentFile.getPath()+"/"+currentFile.getName());
 
 				return content;
 			} finally {
@@ -146,7 +147,7 @@ public class CustomizeCssFormController {
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
-			CssFile tmp = fileService.getCssFileByName(currentFile.getName());
+			CssFile tmp = fileService.getCssFileByNameAndPath(currentFile.getName());
             if(tmp != null) {
 			    currentFile.setId(tmp.getId());
             }
@@ -203,12 +204,13 @@ public class CustomizeCssFormController {
 		Queue<File> dirs = new LinkedList<File>();
 		dirs.add(dir);
 		while (!dirs.isEmpty()) {
-			for (File f : dirs.poll().listFiles(urlFilter)) {
+            File temp = dirs.poll();
+			for (File f : temp.listFiles(urlFilter)) {
 				if (f.isDirectory() && recursive) {
 					dirs.add(f);
 				} else if (f.isFile()) {
 					allFiles.add(f);
-					cssFileMap.put(f.getName(), dir.getAbsolutePath());
+					cssFileMap.put(f.getName(), temp.getAbsolutePath());
 					cssFileNames.add(f.getName());
 				}
 			}

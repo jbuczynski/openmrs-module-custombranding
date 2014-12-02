@@ -12,8 +12,13 @@ public class CssFile extends BaseOpenmrsObject implements Serializable {
 	private String name;
 	private String path;
 	private String content;
+    private String nameAndPath;
 
-	public Integer getCssFileId() {
+    public String getNameAndPath() { return nameAndPath;}
+
+    public void setNameAndPath(String nameAndPAth) { this.nameAndPath = nameAndPAth;}
+
+    public Integer getCssFileId() {
 		return cssFileId;
 	}
 

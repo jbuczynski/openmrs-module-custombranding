@@ -31,15 +31,22 @@
                     dataType: 'text',
                     async: true,
                     success: function(response) {
-                          $(elementId + "option").remove();
-                         for(var item in response) {
-                           $(elementId).append(
-                               $("<option ></option>")
-                                   .text(item.name)
-                                   .val(item.name)
+                         document.getElementById(elementId).options.length = 0;
 
-                                   );
-                         }
+
+
+                            jQuery.each( $.parseJSON(response), function(i, val) {
+                                var x = document.getElementById(elementId);
+                                var option = document.createElement("option");
+                                option.text = i;
+                                option.value = i;
+                                option.title = val;
+                                x.add(option);
+
+                            });
+
+
+
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         alert(jqXHR.status + " " + jqXHR.responseText);

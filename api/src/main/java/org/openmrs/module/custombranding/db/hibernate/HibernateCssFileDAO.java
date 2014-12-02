@@ -44,6 +44,12 @@ public class HibernateCssFileDAO implements CssFileDAO {
 		return (CssFile) q.setString("name", name).uniqueResult();
 	}
 
+    @Override
+    public CssFile getCssFileByNameAndPath(String nameAndPath)  {
+        Query q = sessionFactory.getCurrentSession().createQuery("from CssFile f where f.nameAndPath = :nameAndPath");
+        return (CssFile) q.setString("nameAndPath", nameAndPath).uniqueResult();
+    }
+
 	@Override
 	public CssFile saveCssFile(CssFile CssFile) {
 		sessionFactory.getCurrentSession().saveOrUpdate(CssFile); //merging two different objects with same id in session
