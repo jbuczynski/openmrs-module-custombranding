@@ -18,7 +18,7 @@
                       $('#contentBox').text(response);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    alert(jqXHR.status + " " + jqXHR.responseText);
+
                 }
         });
 }
@@ -48,28 +48,28 @@
         }
 
         function dbRequest(action) {
-
-                    $.ajax({
-                            type: 'POST',
-                            url: "/openmrs/module/custombranding/dbRequest.form",
-                            dataType: 'text',
-                            async: true,
-                            data: {
-                                    'action': action,
-                                    'content':  $('#contentBox').text
-                                    },
-                            success: function(response) {
-                                 }
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                alert(jqXHR.status + " " + jqXHR.responseText);
-                            }
-                    });
+                    if( $("#cssFilesList option:selected").text() !== '') {
+                        $.ajax({
+                                type: 'POST',
+                                url: "/openmrs/module/custombranding/dbRequest.form",
+                                dataType: 'text',
+                                async: true,
+                                data: {
+                                        'action': action,
+                                        'content':   document.getElementById('contentBox').value
+                                        },
+                                success: function(response) {
+                                      location.reload(true);
+                                },
+                                error: function() {
+                                    location.reload(true);
+                                }
+                        });
+                    }
                 }
 
 
 </script>
- <c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 
     <div class="boxHeader">
         <span style="float: right">
@@ -81,9 +81,9 @@
 	<textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
 
 
-    <select id="cssFilesList" size="18" items="${cssFilesList}" onchange="getFileContent()">
+    <select id="cssFilesList" size="18"  onchange="getFileContent()">
         <c:forEach var="cssFile" items="${cssFileNames}">
-                 <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
+                 <option value="${cssFile}" title="${cssFileMap[cssFile]} ">${cssFile}</option>
         </c:forEach>
 
     </select>
@@ -93,7 +93,7 @@
      <table>
          <tr>
              <td>
-                 <button onclick="dbRequest(updateCssFile)">Save</button>
+                 <button onclick="dbRequest('updateCssFile')">Save</button>
              </td>
              <td>
                   <form id="validate">

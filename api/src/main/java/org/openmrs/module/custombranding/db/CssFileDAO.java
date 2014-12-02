@@ -44,7 +44,9 @@ public interface CssFileDAO {
      */
     public CssFile saveCssFile(CssFile CssFile);
 
-    /**
+	public CssFile mergeCssFile(CssFile CssFile);
+
+	/**
      * Deletes an CssFile from the database
      * 
      * @param CssFile

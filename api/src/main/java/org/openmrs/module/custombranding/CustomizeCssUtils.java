@@ -25,18 +25,19 @@ public class CustomizeCssUtils {
 		Log log = LogFactory.getLog(CustomizeCssUtils.class);
 
 		CssFileService service = Context.getService(CssFileService.class);
-		List<CssFile> allDbFiles = (List<CssFile>)service.getAllCssFiles();
+
+			List<CssFile> allDbFiles = (List<CssFile>) service.getAllCssFiles();
+
 
 		for(CssFile cssf : allDbFiles) {
 
 			File f = new File(cssf.getPath() + "/" + cssf.getName());
 			if(!f.isDirectory()) {
 				FileWriter writer = new FileWriter(f, false); //override file
-				// false to overwrite.
 				writer.write(cssf.getContent());
 				writer.close();
 			} else {
-				log.warn("path recieve from database file points to directory instead of css file: " + cssf.getPath());
+				log.warn("path recieved from database file points to directory instead of css file: " + cssf.getPath());
 			}
 		}
 	}

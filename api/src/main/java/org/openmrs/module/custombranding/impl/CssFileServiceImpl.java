@@ -64,6 +64,11 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 	}
 
 	@Override
+	public CssFile mergeCssFile(CssFile CssFile) {
+		return dao.mergeCssFile(CssFile);
+	}
+
+	@Override
 	public void purgeCssFile(CssFile CssFile) {
 		dao.deleteCssFile(CssFile);
 	}

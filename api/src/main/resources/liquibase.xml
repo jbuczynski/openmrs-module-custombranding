@@ -7,7 +7,7 @@
 		See http://www.liquibase.org/manual/home#available_database_refactorings
 		for a list of supported elements and attributes
 	-->
-	<changeSet author="jbuczynski" id="201411281024">
+	<changeSet author="jbuczynski" id="201411281025">
 
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -16,6 +16,7 @@
 		</preConditions>
 
 		<comment>Create the CssFile table</comment>
+
 		<createTable tableName="custombranding_CssFile">
 			<column autoIncrement="true" name="cssFile_id" type="int">
 				<constraints primaryKey="true" nullable="false" />
@@ -25,6 +26,7 @@
 			<column name="content" type="mediumtext" />
 			<column name="uuid" type="char(38)" />
 		</createTable>
+
 	</changeSet>
 </databaseChangeLog>
 

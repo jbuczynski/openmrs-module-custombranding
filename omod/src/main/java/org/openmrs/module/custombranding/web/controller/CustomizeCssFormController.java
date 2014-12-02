@@ -57,31 +57,13 @@ public class CustomizeCssFormController {
 
 	@RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
 	public void handleCssEditing( HttpServletRequest request, ModelMap model ) {
-
-		realPath = request.getSession().getServletContext().getRealPath("");
-		File dir = new File(realPath);
-		getCsFiles(dir, lastRecursionToogle);
-
-		model.addAttribute("curreCssFile", currentFile);
-		model.addAttribute("cssFileNames", cssFileNames);
-		model.addAttribute("cssFileMap", cssFileMap);
-
+		handleLisModel(request, model);
 	}
-
-
 
 	@RequestMapping(value="/customizeCssReplaceFiles.form", method=RequestMethod.GET)
 	public void handleCssReplacing(HttpServletRequest request, ModelMap model  ){
-
-		realPath = request.getSession().getServletContext().getRealPath("");
-		File dir = new File(realPath);
-		getCsFiles(dir, lastRecursionToogle);
-
-		model.addAttribute("curreCssFile", currentFile);
-		model.addAttribute("cssFileNames", cssFileNames);
-		model.addAttribute("cssFileMap", cssFileMap);
+		handleLisModel(request, model);
 	}
-
 
 	@RequestMapping(value="/CssContent", method=RequestMethod.GET)
 	public @ResponseBody String getCssFileContent(@RequestParam(value="name", defaultValue="none") String name, HttpServletRequest request) throws IOException {
@@ -110,38 +92,45 @@ public class CustomizeCssFormController {
 			}
 		}
 		else {
+			MessageSourceService mss = Context.getMessageSourceService();
+			mss.getMessage("No such file");
 			return "No such file";
 		}
 	}
 
 	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
-	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request, ModelMap model)  {
+	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request)  {
 
 		realPath = request.getSession().getServletContext().getRealPath("");
 		File dir = new File(realPath);
 		lastRecursionToogle = !lastRecursionToogle;
 		getCsFiles(dir, lastRecursionToogle);
 
-		model.addAttribute("curreCssFile", currentFile);
-		model.addAttribute("cssFileNames", cssFileNames);
-		model.addAttribute("cssFileMap", cssFileMap);
+		//model.addAttribute("curreCssFile", currentFile);
+		//model.addAttribute("cssFileNames", cssFileNames);
+		//model.addAttribute("cssFileMap", cssFileMap);
 
 		return cssFileMap;
 	}
 
     @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
-	public String submitDepartment( ModelMap model,HttpServletRequest request,
-								   @RequestParam(required = true, value = "action") String action) {
+	public @ResponseBody String dbRequest( HttpServletRequest request,
+								   @RequestParam(required = true, value = "action") String action, @RequestParam(required = false, value = "content") String content ) {
 
 		MessageSourceService mss = Context.getMessageSourceService();
-		String redirect = "redirect:/module/custombranding/customizeCssEdit.form";
+		String redirect = "/module/custombranding/customizeCssEdit.form";
+		if ( content == null) {
+			content = "";
+			log.warn("css file content never should be null");
+		}
+		currentFile.setContent(content);
 
 			if (!Context.isAuthenticated()) {
 				//errors.reject("custombranding.auth.required");
 			} else if (mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
-				redirect = updateCssFile(request, model);
+				redirect = updateCssFile(request);
 			} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
-				redirect = deleteCssFile(request, model);
+				redirect = deleteCssFile(request);
 			}
 
 		try {
@@ -152,18 +141,17 @@ public class CustomizeCssFormController {
 		return redirect;
 	}
 
-	private String updateCssFile( HttpServletRequest request, ModelMap model ) {
+	private String updateCssFile( HttpServletRequest request) {
 
-		MessageSourceService mss = Context.getMessageSourceService();
 		CssFileService fileService = Context.getService(CssFileService.class);
-
 
 		try {
 			CssFile tmp = fileService.getCssFileByName(currentFile.getName());
             if(tmp != null) {
 			    currentFile.setId(tmp.getId());
             }
-			CssFile cssFile = fileService.saveCssFile(currentFile);
+			validateCF();
+			CssFile cssFile = fileService.mergeCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
 		} catch (org.hibernate.NonUniqueResultException e) {
 			log.error("In database exist multiple css files with same name!", e);
@@ -174,19 +162,16 @@ public class CustomizeCssFormController {
 
 		}
 
-		return "redirect:/module/custombranding/customizeCssEdit.form";
+		return "/module/custombranding/customizeCssEdit.form";
 	}
 
 
-	private String deleteCssFile( HttpServletRequest request, ModelMap model ) {
+	private String deleteCssFile( HttpServletRequest request) {
 
-
-
-		MessageSourceService mss = Context.getMessageSourceService();
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
-
+			validateCF();
 			fileService.purgeCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.delete.success");
 		}
@@ -195,7 +180,7 @@ public class CustomizeCssFormController {
 			log.error("Failed to delete department", ex);
 		}
 
-		return "redirect:/module/custombranding/customizeCssReplaceFiles.form";
+		return "/module/custombranding/customizeCssReplaceFiles.form";
 
 	}
 
@@ -227,6 +212,24 @@ public class CustomizeCssFormController {
 					cssFileNames.add(f.getName());
 				}
 			}
+		}
+	}
+
+	private void handleLisModel(HttpServletRequest request, ModelMap model ) {
+
+		realPath = request.getSession().getServletContext().getRealPath("");
+		File dir = new File(realPath);
+		getCsFiles(dir, lastRecursionToogle);
+
+		model.addAttribute("curreCssFile", currentFile);
+		model.addAttribute("cssFileNames", cssFileNames);
+		model.addAttribute("cssFileMap", cssFileMap);
+	}
+
+	private void validateCF() throws Exception{
+
+		if(currentFile.getName() == null || currentFile.getPath() == null || currentFile.getContent() == null) {
+			throw new Exception("css file validation exception, any field cannot be null");
 		}
 	}
 

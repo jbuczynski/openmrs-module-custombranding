@@ -62,6 +62,15 @@ public interface CssFileService extends OpenmrsService {
 	public CssFile saveCssFile(CssFile file);
 
 	/**
+	 * Saves the specified Css file to the database
+	 *
+	 * @param CssFile the CssFile to save
+	 * @return the CssFile saved
+	 */
+	@Transactional
+	public CssFile mergeCssFile(CssFile file);
+
+	/**
 	 * Purges the specified CssFile from the database
 	 *
 	 * @param CssFile the CssFile to purge
