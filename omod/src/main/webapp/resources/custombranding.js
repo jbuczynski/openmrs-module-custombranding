@@ -45,7 +45,7 @@
 
         if(action === "replaceCssFile" ){
             if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" ) {
-                var text =
+                
                 var data = {
                     'action': action,
                     'content':   $("#uploadCssFile").val()
