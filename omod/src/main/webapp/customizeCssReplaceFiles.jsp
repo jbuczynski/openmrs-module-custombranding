@@ -4,39 +4,32 @@
 
     <%@ include file="localHeader.jsp" %>
 
+    <script src="http://code.jquery.com/jquery-latest.min.js"
+            type="text/javascript"></script>
 
-
-
+    <openmrs:htmlInclude file="/moduleResources/custombranding/custombranding.js" />
 
     <div class="boxHeader">
          <span style="float: right">
-             <a href="#" id="showRetired" onClick="return toggleRowVisibilityForClass('formTable', 'voided');"><spring:message code="custombranding.boxheader.toogle"/></a>
+             <a href="#" id="toogleRecursion" onClick="toogleRecursiveSearchingAndList('cssFilesList')"><spring:message code="custombranding.boxheader.toogle"/></a>
          </span>
      	<b><spring:message code="custombranding.replace.header" /></b>
      </div>
-    ${cssFileNames}
-
 
 
 
     <fieldset>
+        <div>
 
-     <form id="replaceCssFileForm"
-        method="post" enctype="multipart/form-data">
-        Upload your css file: <input size="50" type="file" name="cssFile"/>
-     <input type="submit" value="Replace" />
-     </form>
-    <form id="save" action="/openmrs/module/custombranding/dbRequest.form" method="POST">
-          <input type="hidden" name="action" value="updateCssFile">
-         <input type="submit" value="add"  name="updateCssFile"/>
-     </form>
+            Upload your css file: <input id="uploadCssFile" size="50" type="file" name="cssFile"/>
+         <input type="submit" value="Replace" onclick="dbRequest('replaceCssFile')"/>
+       </div>
 
-	<select id="cssFilesList" multiple="multiple" items="${cssFilesList}">
-        <c:forEach var="cssFile" items="${cssFileNames}">
-                 <option value="${cssFile}" title="${cssFileMap[cssFile]}">${cssFile}</option>
-        </c:forEach>
 
-    </select>
     </fieldset>
-
+    <select id="cssFilesList" size="18" >
+        <c:forEach var="item" items="${cssFileMap}">
+                 <option value="${item.value}" title="${item.key} ">${item.value}</option>
+        </c:forEach>
+    </select>
 	<%@ include file="/WEB-INF/template/footer.jsp"%>

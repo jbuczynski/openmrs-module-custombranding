@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -48,7 +49,6 @@ import java.util.Queue;
 public class CustomizeCssFormController {
 
 	protected final Log log = LogFactory.getLog(getClass());
-	private List<String> cssFileNames;
 	private HashMap<String,String> cssFileMap;
 	private String realPath;
 	private CssFile currentFile = new CssFile();
@@ -57,42 +57,21 @@ public class CustomizeCssFormController {
 
 	@RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
 	public void handleCssEditing( HttpServletRequest request, ModelMap model ) {
-		handleLisModel(request, model);
+		handleListModel(request, model);
 	}
 
 	@RequestMapping(value="/customizeCssReplaceFiles.form", method=RequestMethod.GET)
 	public void handleCssReplacing(HttpServletRequest request, ModelMap model  ){
-		handleLisModel(request, model);
+		handleListModel(request, model);
 	}
 
 	@RequestMapping(value="/CssContent", method=RequestMethod.GET)
-	public @ResponseBody String getCssFileContent(@RequestParam(value="name", defaultValue="none") String name, HttpServletRequest request) throws IOException {
+	public @ResponseBody String getCssFileContent(@RequestParam(value="path", defaultValue="none") String path,
+												  HttpServletRequest request) throws IOException {
 
-		if(!name.equals("none") && cssFileMap.containsKey(name)) {
-
-			BufferedReader br = new BufferedReader(new FileReader(cssFileMap.get(name) + "/" + name));
-			try {
-				StringBuilder sb = new StringBuilder();
-				String line = br.readLine();
-
-				while (line != null) {
-					sb.append(line);
-					sb.append(System.lineSeparator());
-					line = br.readLine();
-				}
-				String content = sb.toString();
-
-				currentFile.setName(name);
-				currentFile.setContent(content);
-				currentFile.setPath(cssFileMap.get(name));
-                currentFile.setNameAndPath(currentFile.getPath()+"/"+currentFile.getName());
-
-				return content;
-			} finally {
-				br.close();
-			}
-		}
-		else {
+		if(!path.equals("none") && cssFileMap.containsKey(path)) {
+				return prepareContent(path);
+			} else {
 			MessageSourceService mss = Context.getMessageSourceService();
 			mss.getMessage("No such file");
 			return "No such file";
@@ -107,16 +86,13 @@ public class CustomizeCssFormController {
 		lastRecursionToogle = !lastRecursionToogle;
 		getCsFiles(dir, lastRecursionToogle);
 
-		//model.addAttribute("curreCssFile", currentFile);
-		//model.addAttribute("cssFileNames", cssFileNames);
-		//model.addAttribute("cssFileMap", cssFileMap);
-
 		return cssFileMap;
 	}
 
     @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
 	public @ResponseBody String dbRequest( HttpServletRequest request,
-								   @RequestParam(required = true, value = "action") String action, @RequestParam(required = false, value = "content") String content ) {
+								   @RequestParam(required = true, value = "action") String action,
+								   @RequestParam(required = false, value = "content") String content ) {
 
 		MessageSourceService mss = Context.getMessageSourceService();
 		String redirect = "/module/custombranding/customizeCssEdit.form";
@@ -132,6 +108,8 @@ public class CustomizeCssFormController {
 				redirect = updateCssFile(request);
 			} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
 				redirect = deleteCssFile(request);
+			} else if(mss.getMessage("custombranding.db.action.replaceCssFile").equals(action)) {
+				redirect = updateCssFile(request);
 			}
 
 		try {
@@ -142,12 +120,13 @@ public class CustomizeCssFormController {
 		return redirect;
 	}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private String updateCssFile( HttpServletRequest request) {
 
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
-			CssFile tmp = fileService.getCssFileByNameAndPath(currentFile.getName());
+			CssFile tmp = fileService.getCssFileByNameAndPath(currentFile.getNameAndPath());
             if(tmp != null) {
 			    currentFile.setId(tmp.getId());
             }
@@ -185,10 +164,34 @@ public class CustomizeCssFormController {
 
 	}
 
+
+
+	private String prepareContent(String path) throws IOException {
+
+		BufferedReader br = new BufferedReader(new FileReader(path));
+
+		StringBuilder sb = new StringBuilder();
+		String line = br.readLine();
+
+		while (line != null) {
+			sb.append(line);
+			sb.append(System.lineSeparator());
+			line = br.readLine();
+		}
+		String content = sb.toString();
+
+		currentFile.setName(cssFileMap.get(path));
+		currentFile.setContent(content);
+		currentFile.setPath(  path.substring(0, path.length() - cssFileMap.get(path).length()));
+		currentFile.setNameAndPath(path);
+		br.close();
+
+		return content;
+	}
+
 	private void getCsFiles(File dir, Boolean recursive) {
 
 		cssFileMap = new HashMap<String, String>();
-		cssFileNames = new LinkedList<String>();
 
 		FileFilter urlFilter = new FileFilter() {
 			@Override
@@ -204,33 +207,31 @@ public class CustomizeCssFormController {
 		Queue<File> dirs = new LinkedList<File>();
 		dirs.add(dir);
 		while (!dirs.isEmpty()) {
-            File temp = dirs.poll();
-			for (File f : temp.listFiles(urlFilter)) {
+			for (File f : dirs.poll().listFiles(urlFilter)) {
 				if (f.isDirectory() && recursive) {
 					dirs.add(f);
 				} else if (f.isFile()) {
 					allFiles.add(f);
-					cssFileMap.put(f.getName(), temp.getAbsolutePath());
-					cssFileNames.add(f.getName());
+					cssFileMap.put(f.getAbsolutePath(), f.getName());
 				}
 			}
 		}
 	}
 
-	private void handleLisModel(HttpServletRequest request, ModelMap model ) {
+	private void handleListModel(HttpServletRequest request, ModelMap model ) {
 
 		realPath = request.getSession().getServletContext().getRealPath("");
 		File dir = new File(realPath);
 		getCsFiles(dir, lastRecursionToogle);
 
-		model.addAttribute("curreCssFile", currentFile);
-		model.addAttribute("cssFileNames", cssFileNames);
+		model.addAttribute("currentCssFile", currentFile);
 		model.addAttribute("cssFileMap", cssFileMap);
 	}
 
 	private void validateCF() throws Exception{
 
-		if(currentFile.getName() == null || currentFile.getPath() == null || currentFile.getContent() == null) {
+		if(currentFile.getName() == null || currentFile.getPath() == null || currentFile.getContent() == null ||
+				currentFile.getNameAndPath() == null) {
 			throw new Exception("css file validation exception, any field cannot be null");
 		}
 	}

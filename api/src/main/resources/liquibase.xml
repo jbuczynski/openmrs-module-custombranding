@@ -7,7 +7,7 @@
 		See http://www.liquibase.org/manual/home#available_database_refactorings
 		for a list of supported elements and attributes
 	-->
-	<changeSet author="jbuczynski" id="201411281025">
+	<changeSet author="jbuczynski" id="201411281027">
 
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -24,6 +24,7 @@
 			<column name="name" type="varchar(255)" />
 			<column name="path" type="varchar(1024)" />
 			<column name="content" type="mediumtext" />
+			<column name="nameAndPath" type="varchar(2048)" />
 			<column name="uuid" type="char(38)" />
 		</createTable>
 
