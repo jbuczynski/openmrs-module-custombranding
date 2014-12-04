@@ -27,7 +27,7 @@
 
 
     </fieldset>
-    <select id="cssFilesList" size="18" >
+    <select id="cssFilesList" size="18"  onchange="getFileContent()">
         <c:forEach var="item" items="${cssFileMap}">
                  <option value="${item.value}" title="${item.key} ">${item.value}</option>
         </c:forEach>

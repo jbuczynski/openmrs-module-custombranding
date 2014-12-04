@@ -1,6 +1,7 @@
     function getFileContent() {
 
         var text = $("#cssFilesList option:selected").attr("title");
+
         $.ajax({
                 type: 'GET',
                 url: "/openmrs/module/custombranding/CssContent.form?path=" + text,
@@ -45,34 +46,29 @@
 
         if(action === "replaceCssFile" ){
             if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" ) {
-                
+
+                var content = readSingleFile('#uploadCssFile');
+
                 var data = {
                     'action': action,
-                    'content':   $("#uploadCssFile").val()
-                }
-                var func = location.reload(true);
-                    ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
-                } else {
-                    $("#errors").text("You need to choose css file to replace with pointed by you");
+                    'content': content
                 }
 
-        } else( $("#cssFilesList option:selected").text() !== '') {
-            $.ajax({
-                    type: 'POST',
-                    url: "/openmrs/module/custombranding/dbRequest.form",
-                    dataType: 'text',
-                    async: true,
-                    data: {
-                            'action': action,
-                            'content':   document.getElementById('contentBox').value
-                            },
-                    success: function(response) {
-                          location.reload(true);
-                    },
-                    error: function() {
-                        location.reload(true);
+                var func = location.reload(true);
+
+                ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
+
+            } else {
+                $("#errors").text("You need to choose css file to replace with pointed by you");
+            }
+
+        } else if( $("#cssFilesList option:selected").text() !== '') {
+                var data = {
+                    'action': action,
+                    'content':   document.getElementById('contentBox').value
                     }
-            });
+                 ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
+
         }
     }
 
@@ -83,20 +79,20 @@
             dataType: _dataType,
             async: _async,
             data: _data,
-            success: f_succes,
-            error: _error)
+            success: _succes,
+            error: _error
         });
     }
 
-    function readSingleFile(e) {
-          var file = e.target.files[0];
+    function readSingleFile(fileElementId) {
+          var file = fileElementId.files[0];
           if (!file) {
             return;
           }
           var reader = new FileReader();
-          reader.onload = function(e) {
-            var contents = e.target.result;
-            displayContents(contents);
+          reader.onload = function(fileElementId) {
+            var contents = fileElementId.result;
+            return contents;
           };
           reader.readAsText(file);
     }

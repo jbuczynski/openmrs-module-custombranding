@@ -55,7 +55,7 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 
     @Override
     public CssFile getCssFileByNameAndPath(String nameAndPath) {
-        return dao.getCssFileByName(nameAndPath);
+        return dao.getCssFileByNameAndPath(nameAndPath);
     }
 
 	@Override

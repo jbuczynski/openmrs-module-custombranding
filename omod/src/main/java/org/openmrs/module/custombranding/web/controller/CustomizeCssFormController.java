@@ -18,18 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +54,7 @@ public class CustomizeCssFormController {
 	private Boolean lastRecursionToogle = false;
 
 
-	@RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
+    @RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
 	public void handleCssEditing( HttpServletRequest request, ModelMap model ) {
 		handleListModel(request, model);
 	}
@@ -81,8 +80,16 @@ public class CustomizeCssFormController {
 	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
 	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request)  {
 
-		realPath = request.getSession().getServletContext().getRealPath("");
-		File dir = new File(realPath);
+		realPath = request.getSession().getServletContext().getRealPath("/");
+        String path2;
+        String path3;
+        try{
+          // path3 = request.getSession().getServletContext().getResource("").getPath();
+            path2 = CustomizeCssUtils.getPath(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        File dir = new File(realPath);
 		lastRecursionToogle = !lastRecursionToogle;
 		getCsFiles(dir, lastRecursionToogle);
 
@@ -138,7 +145,7 @@ public class CustomizeCssFormController {
 		}
 		catch (Exception ex) {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
-			log.error("Failed to delete css file", ex);
+			log.error("Failed to update css file", ex);
 
 		}
 
@@ -220,7 +227,8 @@ public class CustomizeCssFormController {
 
 	private void handleListModel(HttpServletRequest request, ModelMap model ) {
 
-		realPath = request.getSession().getServletContext().getRealPath("");
+		realPath = request.getSession().getServletContext().getRealPath("/");
+
 		File dir = new File(realPath);
 		getCsFiles(dir, lastRecursionToogle);
 
