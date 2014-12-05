@@ -81,14 +81,14 @@ public class CustomizeCssFormController {
 	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request)  {
 
 		realPath = request.getSession().getServletContext().getRealPath("/");
-        String path2;
-        String path3;
-        try{
-          // path3 = request.getSession().getServletContext().getResource("").getPath();
-            path2 = CustomizeCssUtils.getPath(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String path2;
+//        String path3;
+//        try{
+//          // path3 = request.getSession().getServletContext().getResource("").getPath();
+//            path2 = CustomizeCssUtils.getPath(this);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         File dir = new File(realPath);
 		lastRecursionToogle = !lastRecursionToogle;
 		getCsFiles(dir, lastRecursionToogle);
@@ -141,6 +141,7 @@ public class CustomizeCssFormController {
 			CssFile cssFile = fileService.mergeCssFile(currentFile);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
 		} catch (org.hibernate.NonUniqueResultException e) {
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
 			log.error("In database exist multiple css files with same name!", e);
 		}
 		catch (Exception ex) {

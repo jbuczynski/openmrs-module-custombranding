@@ -21,7 +21,7 @@
     <fieldset>
         <div>
 
-            Upload your css file: <input id="uploadCssFile" size="50" type="file" name="cssFile"/>
+            Upload your css file: <input id="uploadCssFile" size="50" type="file" name="cssFile" />
          <input type="submit" value="Replace" onclick="dbRequest('replaceCssFile')"/>
        </div>
 

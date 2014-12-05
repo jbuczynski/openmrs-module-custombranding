@@ -44,17 +44,22 @@
 
     function dbRequest(action) {
 
+        function func() {
+                        location.reload(true);
+                      }
         if(action === "replaceCssFile" ){
             if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" ) {
 
-                var content = readSingleFile('#uploadCssFile');
+
+                var content;
+                 readSingleFile('uploadCssFile',content);
+
+                alert(content);
 
                 var data = {
                     'action': action,
                     'content': content
                 }
-
-                var func = location.reload(true);
 
                 ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
 
@@ -67,33 +72,49 @@
                     'action': action,
                     'content':   document.getElementById('contentBox').value
                     }
+
                  ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
 
         }
     }
+        function ajaxRequest(_type, _url, _dataType, _async, _data, _succes, _error) {
+             $.ajax({
+                type: _type,
+                url: _url,
+                dataType: _dataType,
+                async: _async,
+                data: _data,
+                success: _succes,
+                error: _error
+            });
+        }
 
-    function ajaxRequest(_type, _url, _dataType, _async, _data, _succes, _error) {
-         $.ajax({
-            type: _type,
-            url: _url,
-            dataType: _dataType,
-            async: _async,
-            data: _data,
-            success: _succes,
-            error: _error
-        });
-    }
+            function readSingleFile(fileElementId, content) {
+                  var file = document.getElementById(fileElementId).files[0];
+                   if (!file) {
+                              return;
+                            }
+                  var ready = false;
 
-    function readSingleFile(fileElementId) {
-          var file = fileElementId.files[0];
-          if (!file) {
-            return;
-          }
-          var reader = new FileReader();
-          reader.onload = function(fileElementId) {
-            var contents = fileElementId.result;
-            return contents;
-          };
-          reader.readAsText(file);
-    }
+                  function check(){
+                      if (ready === true) {
+                           return content;
+                      }
+                      setTimeout(check, 800);
+                  }
+
+
+
+                  var reader = new FileReader();
+                  reader.onloadend = function() {
+                      content = reader.result;
+                      ready = true;
+                  };
+                  reader.readAsText(file);
+                  check();
+            }
+
+
+
+
 

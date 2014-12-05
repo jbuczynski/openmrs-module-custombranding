@@ -15,33 +15,35 @@
         </span>
     	<b><spring:message code="custombranding.edit.header" /></b>
     </div>
-
-	<textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
-
-
-    <select id="cssFilesList" size="18"  onchange="getFileContent()">
-        <c:forEach var="item" items="${cssFileMap}">
-                 <option value="${item.value}" title="${item.key} ">${item.value}</option>
-        </c:forEach>
-    </select>
-    <br>
-
-     <div >
-     <table>
-         <tr>
+    <table>
+        <tr>
              <td>
-                 <button onclick="dbRequest('updateCssFile')">Save</button>
+                <textarea id="contentBox" name="Css file content" rows="20" cols="90" type="_moz">Content ...</textarea>
+            </td>
+            <td>
+                <select id="cssFilesList" size="18"  onchange="getFileContent()">
+                    <c:forEach var="item" items="${cssFileMap}">
+                             <option value="${item.value}" title="${item.key} ">${item.value}</option>
+                    </c:forEach>
+                </select>
              </td>
-             <td>
-                  <form id="validate">
-                     <input type="hidden" name="action" value="validate">
-                     <input type="submit" value="validate" />
-                 </form>
-             </td>
-         </tr>
-     </table>
-
-
+        </tr>
+    </table>
+     <br>
+    <div >
+         <table>
+             <tr>
+                 <td>
+                     <button onclick="dbRequest('updateCssFile')">Save</button>
+                 </td>
+                 <td>
+                      <form id="validate">
+                         <input type="hidden" name="action" value="validate">
+                         <input type="submit" value="validate" />
+                     </form>
+                 </td>
+             </tr>
+         </table>
      </div>
 
 

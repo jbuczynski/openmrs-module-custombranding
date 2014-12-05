@@ -102,7 +102,7 @@
                     </div>
                 </td>
                 <td>
-                    <form id="uploadFaviconForm" 
+                    <form id="uploadFaviconForm"
                           method="post" enctype="multipart/form-data">
                         <input size="50" type="file" name="faviconFile"/>
                         <input type="submit" value="Replace" />
