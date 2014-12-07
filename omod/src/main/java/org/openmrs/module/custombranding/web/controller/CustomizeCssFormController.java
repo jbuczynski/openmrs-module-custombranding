@@ -38,11 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-/**
- * The controller for previewing a HtmlForm by loading the xml file that defines that HtmlForm from
- * disk.
- * <p/>
- */
+
 @Controller
 @RequestMapping(value="/module/custombranding")
 public class CustomizeCssFormController {
@@ -78,17 +74,10 @@ public class CustomizeCssFormController {
 	}
 
 	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
-	public @ResponseBody Map<String, String> SearchCssFiles( HttpServletRequest request)  {
+	public @ResponseBody Map<String, String> searchCssFiles( HttpServletRequest request)  {
 
 		realPath = request.getSession().getServletContext().getRealPath("/");
-//        String path2;
-//        String path3;
-//        try{
-//          // path3 = request.getSession().getServletContext().getResource("").getPath();
-//            path2 = CustomizeCssUtils.getPath(this);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+
         File dir = new File(realPath);
 		lastRecursionToogle = !lastRecursionToogle;
 		getCsFiles(dir, lastRecursionToogle);
@@ -110,7 +99,8 @@ public class CustomizeCssFormController {
 		currentFile.setContent(content);
 
 			if (!Context.isAuthenticated()) {
-				//errors.reject("custombranding.auth.required");
+				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.auth.required");
+				return null;
 			} else if (mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
 				redirect = updateCssFile(request);
 			} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
@@ -190,7 +180,6 @@ public class CustomizeCssFormController {
 
 		currentFile.setName(cssFileMap.get(path));
 		currentFile.setContent(content);
-		currentFile.setPath(  path.substring(0, path.length() - cssFileMap.get(path).length()));
 		currentFile.setNameAndPath(path);
 		br.close();
 
@@ -233,14 +222,13 @@ public class CustomizeCssFormController {
 		File dir = new File(realPath);
 		getCsFiles(dir, lastRecursionToogle);
 
-		model.addAttribute("currentCssFile", currentFile);
+		//model.addAttribute("currentCssFile", currentFile);
 		model.addAttribute("cssFileMap", cssFileMap);
 	}
 
 	private void validateCF() throws Exception{
 
-		if(currentFile.getName() == null || currentFile.getPath() == null || currentFile.getContent() == null ||
-				currentFile.getNameAndPath() == null) {
+		if(currentFile.getName() == null ||  currentFile.getContent() == null || currentFile.getNameAndPath() == null) {
 			throw new Exception("css file validation exception, any field cannot be null");
 		}
 	}

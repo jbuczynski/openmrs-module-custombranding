@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
 
+import javax.naming.Context;
 import java.io.IOException;
 
 /**
@@ -47,6 +48,7 @@ public class CustomBrandingActivator extends BaseModuleActivator {
 		} catch (IOException e) {
 			log.fatal("Error occurs while overriding existing css files from database,  Error was:", e);
 		}
+
 	}
 	
 	/**

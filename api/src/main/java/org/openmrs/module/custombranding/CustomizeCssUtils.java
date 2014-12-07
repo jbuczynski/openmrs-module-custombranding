@@ -2,7 +2,9 @@ package org.openmrs.module.custombranding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsConstants;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -16,13 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Created by jakub on 25.11.14.
- */
+
 public class CustomizeCssUtils {
 
-	//metoda do podmianki plików
-	//
+
 	public static void overrideDefaultCssFilesWithCustom() throws IOException {
 		Log log = LogFactory.getLog(CustomizeCssUtils.class);
 
@@ -33,30 +32,22 @@ public class CustomizeCssUtils {
 
 		for(CssFile cssf : allDbFiles) {
 
-			File f = new File(cssf.getPath() + "/" + cssf.getName());
+			File f = new File(cssf.getNameAndPath());
 			if(!f.isDirectory()) {
 				FileWriter writer = new FileWriter(f, false); //override file
 				writer.write(cssf.getContent());
 				writer.close();
 			} else {
-				log.warn("path recieved from database file points to directory instead of css file: " + cssf.getPath());
+				log.warn("path recieved from database file points to directory instead of css file: " + cssf.getNameAndPath());
 			}
 		}
 	}
 
-    public static String getPath(Object obj) throws UnsupportedEncodingException {
-        String path = obj.getClass().getClassLoader().getResource("").getPath();
-        String fullPath = URLDecoder.decode(path, "UTF-8");
-        String pathArr[] = fullPath.split("/WEB-INF/classes/");
-        System.out.println(fullPath);
-        System.out.println(pathArr[0]);
-        fullPath = pathArr[0];
+    public static void setServerLocation() {
 
-        String reponsePath = "";
-
-        reponsePath = new File(fullPath).getPath();
-        return reponsePath;
+//        String realPath = Context.getServletContext().getRealPath("/");
+//        GlobalProperty gp = new GlobalProperty();
+//        gp.setPropertyValue(xml);
+//        Context.getAdministrationService().saveGlobalProperty(gp);
     }
-
-
 }

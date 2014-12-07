@@ -2,15 +2,20 @@
 	<li class="first">
 		<a href="${pageContext.request.contextPath}/admin"><spring:message code="admin.title.short"/></a>
 	</li>
-	<li <c:if test='<%= request.getRequestURI().contains("htmlForms") %>'>class="active"</c:if>>
+	<li>
 		<a href="${pageContext.request.contextPath}/module/custombranding/customizeCssEdit.form">
 			<spring:message code="custombranding.menu.edit"/>
 		</a>
 	</li>
-	<li <c:if test='<%= request.getRequestURI().contains("htmlFormFromFile") %>'>class="active"</c:if>>
+	<li>
 		<a href="${pageContext.request.contextPath}/module/custombranding/customizeCssReplaceFiles.form">
 			<spring:message code="custombranding.menu.replace"/>
 		</a>
 	</li>
+	<li>
+    		<a href="${pageContext.request.contextPath}/module/custombranding/custombrandingAdminPage.form">
+    			<spring:message code="custombranding.link.admin"/>
+    		</a>
+    	</li>
 
 </ul>

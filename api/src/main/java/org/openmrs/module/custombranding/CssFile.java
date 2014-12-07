@@ -10,7 +10,6 @@ public class CssFile extends BaseOpenmrsObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer cssFileId;
 	private String name;
-	private String path;
 	private String content;
     private String nameAndPath;
 
@@ -32,14 +31,6 @@ public class CssFile extends BaseOpenmrsObject implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public String getContent() {

@@ -1,67 +1,54 @@
     function getFileContent() {
 
+       var text = $("#cssFilesList option:selected").attr("title");
+
+       function succes(response) {
+              $('#contentBox').text(response);
+       }
+       ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', succes, null);
+    }
+    function setFileProps() {
+
         var text = $("#cssFilesList option:selected").attr("title");
 
-        $.ajax({
-                type: 'GET',
-                url: "/openmrs/module/custombranding/CssContent.form?path=" + text,
-                dataType: 'text',
-                async: true,
-                success: function(response) {
-                      $('#contentBox').text(response);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-
-                }
-        });
+        ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', null, null);
     }
 
     function toogleRecursiveSearchingAndList(elementId) {
 
-        $.ajax({
-                type: 'GET',
-                url: "/openmrs/module/custombranding/SearchCssFiles.form",
-                dataType: 'text',
-                async: true,
-                success: function(response) {
-                     document.getElementById(elementId).options.length = 0;
+      function succes(response) {
 
-                        jQuery.each( $.parseJSON(response), function(i, val) {
-                            var x = document.getElementById(elementId);
-                            var option = document.createElement("option");
-                            option.text = val;
-                            option.value = val;
-                            option.title = i;
-                            x.add(option);
+            document.getElementById(elementId).options.length = 0;
 
-                        });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
+            jQuery.each( $.parseJSON(response), function(i, val) {
+                var x = document.getElementById(elementId);
+                var option = document.createElement("option");
+                option.text = val;
+                option.value = val;
+                option.title = i;
+                x.add(option);
+            });
+        }
 
-                }
-        });
+       ajaxRequest_Get("/openmrs/module/custombranding/SearchCssFiles.form", 'text', succes, null);
     }
 
-    function dbRequest(action) {
+    function dbRequest(action, optionalFileContent) {
 
         function func() {
                         location.reload(true);
                       }
+
         if(action === "replaceCssFile" ){
-            if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" ) {
+            if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" && optionalFileContent !== undefined) {
 
-
-                var content;
-                 readSingleFile('uploadCssFile',content);
-
-                alert(content);
 
                 var data = {
                     'action': action,
-                    'content': content
+                    'content': optionalFileContent
                 }
 
-                ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
+                ajaxRequest_Post( "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
 
             } else {
                 $("#errors").text("You need to choose css file to replace with pointed by you");
@@ -73,46 +60,48 @@
                     'content':   document.getElementById('contentBox').value
                     }
 
-                 ajaxRequest('POST', "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
+                 ajaxRequest_Post( "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
 
         }
     }
-        function ajaxRequest(_type, _url, _dataType, _async, _data, _succes, _error) {
-             $.ajax({
-                type: _type,
-                url: _url,
-                dataType: _dataType,
-                async: _async,
-                data: _data,
-                success: _succes,
-                error: _error
-            });
+    function ajaxRequest_Post( _url, _dataType, _async, _data, _succes, _error) {
+         $.ajax({
+            type: "POST",
+            url: _url,
+            dataType: _dataType,
+            async: _async,
+            data: _data,
+            success: _succes,
+            error: _error
+        });
+    }
+
+     function ajaxRequest_Get( _url, _dataType, _succes, _error) {
+         $.ajax({
+             type: "GET",
+             url: _url,
+             dataType: _dataType,
+             async: true,
+             success: _succes,
+             error: _error
+         });
         }
 
-            function readSingleFile(fileElementId, content) {
-                  var file = document.getElementById(fileElementId).files[0];
-                   if (!file) {
-                              return;
-                            }
-                  var ready = false;
+        function readSingleFile(fileElementId) {
+              var file = document.getElementById(fileElementId).files[0];
+               if (!file) {
+                          return;
+                        }
 
-                  function check(){
-                      if (ready === true) {
-                           return content;
-                      }
-                      setTimeout(check, 800);
-                  }
+              var reader = new FileReader();
+              reader.onloadend = function() {
+                  content = reader.result;
+                  dbRequest('replaceCssFile', content);
+              };
+              reader.readAsText(file);
 
+        }
 
-
-                  var reader = new FileReader();
-                  reader.onloadend = function() {
-                      content = reader.result;
-                      ready = true;
-                  };
-                  reader.readAsText(file);
-                  check();
-            }
 
 
 

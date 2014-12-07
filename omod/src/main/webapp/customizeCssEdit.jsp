@@ -39,7 +39,7 @@
                  <td>
                       <form id="validate">
                          <input type="hidden" name="action" value="validate">
-                         <input type="submit" value="validate" />
+                         <input type="submit" value="validate" disabled="true"/>
                      </form>
                  </td>
              </tr>
