@@ -12,10 +12,4 @@
 			<spring:message code="custombranding.menu.replace"/>
 		</a>
 	</li>
-	<li>
-    		<a href="${pageContext.request.contextPath}/module/custombranding/custombrandingAdminPage.form">
-    			<spring:message code="custombranding.link.admin"/>
-    		</a>
-    	</li>
-
 </ul>

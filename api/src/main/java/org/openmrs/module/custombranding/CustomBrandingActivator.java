@@ -14,12 +14,11 @@
 package org.openmrs.module.custombranding;
 
 
-import org.apache.commons.logging.Log; 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
 
-import javax.naming.Context;
 import java.io.IOException;
 
 /**
@@ -48,7 +47,6 @@ public class CustomBrandingActivator extends BaseModuleActivator {
 		} catch (IOException e) {
 			log.fatal("Error occurs while overriding existing css files from database,  Error was:", e);
 		}
-
 	}
 	
 	/**
@@ -63,11 +61,7 @@ public class CustomBrandingActivator extends BaseModuleActivator {
 	 * @see ModuleActivator#started()
 	 */
 	@Override
-	public void started() {
-		log.info("Custom Branding Module started");
-
-
-	}
+	public void started() { log.info("Custom Branding Module started"); }
 	
 	/**
 	 * @see ModuleActivator#willStop()

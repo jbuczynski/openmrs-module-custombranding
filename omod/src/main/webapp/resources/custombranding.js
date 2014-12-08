@@ -51,7 +51,7 @@
                 ajaxRequest_Post( "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
 
             } else {
-                $("#errors").text("You need to choose css file to replace with pointed by you");
+                $("#messageBox").text("You need to choose css file to replace with pointed by you");
             }
 
         } else if( $("#cssFilesList option:selected").text() !== '') {
@@ -76,31 +76,39 @@
         });
     }
 
-     function ajaxRequest_Get( _url, _dataType, _succes, _error) {
-         $.ajax({
+    function ajaxRequest_Get( _url, _dataType, _succes, _error) {
+        $.ajax({
              type: "GET",
              url: _url,
              dataType: _dataType,
              async: true,
              success: _succes,
              error: _error
-         });
-        }
+        });
+    }
 
-        function readSingleFile(fileElementId) {
-              var file = document.getElementById(fileElementId).files[0];
-               if (!file) {
-                          return;
-                        }
+    function readSingleFile(fileElementId) {
+          var file = document.getElementById(fileElementId).files[0];
+           if (!file) {
+              return;
+            }
 
-              var reader = new FileReader();
-              reader.onloadend = function() {
-                  content = reader.result;
-                  dbRequest('replaceCssFile', content);
-              };
-              reader.readAsText(file);
+          var reader = new FileReader();
+          reader.onloadend = function() {
+              content = reader.result;
+              dbRequest('replaceCssFile', content);
+          };
+          reader.readAsText(file);
 
-        }
+    }
+
+    function validateReplacing() {
+
+    }
+
+     function validateEditing() {
+
+    }
 
 
 

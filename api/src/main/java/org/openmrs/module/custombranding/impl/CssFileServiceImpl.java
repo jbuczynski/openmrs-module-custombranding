@@ -20,14 +20,6 @@ public class CssFileServiceImpl extends BaseOpenmrsService implements CssFileSer
 
 	private CssFileDAO dao;
 
-	/*
-	 * Optimization to minimize database hits for the needs-name-and-description-migration check.
-	 * Once all forms have been migrated, we no longer need to hit the database on further checks
-	 * because there is no way to add more un-migrated forms. (In theory someone could add some 
-	 * directly to the database, so we use an instance variable here that will be reset whenever
-	 * the system is restarted or the module is reloaded.
-	 */
-
 	private boolean nameAndDescriptionMigrationDone = false;
 
 	/**

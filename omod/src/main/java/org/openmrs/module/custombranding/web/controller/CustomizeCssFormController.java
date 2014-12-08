@@ -10,29 +10,19 @@ import org.openmrs.module.custombranding.CustomizeCssUtils;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +66,7 @@ public class CustomizeCssFormController {
 	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
 	public @ResponseBody Map<String, String> searchCssFiles( HttpServletRequest request)  {
 
-		realPath = request.getSession().getServletContext().getRealPath("/");
+		realPath = CustomizeCssUtils.getAppPath(request.getSession());
 
         File dir = new File(realPath);
 		lastRecursionToogle = !lastRecursionToogle;
@@ -143,7 +133,6 @@ public class CustomizeCssFormController {
 		return "/module/custombranding/customizeCssEdit.form";
 	}
 
-
 	private String deleteCssFile( HttpServletRequest request) {
 
 		CssFileService fileService = Context.getService(CssFileService.class);
@@ -161,8 +150,6 @@ public class CustomizeCssFormController {
 		return "/module/custombranding/customizeCssReplaceFiles.form";
 
 	}
-
-
 
 	private String prepareContent(String path) throws IOException {
 
@@ -196,7 +183,7 @@ public class CustomizeCssFormController {
 				if (file.isDirectory()) {
 					return true;
 				}
-				return file.getName().endsWith(".css"); // return .url files
+				return file.getName().endsWith(".css");
 			}
 		};
 
@@ -217,12 +204,11 @@ public class CustomizeCssFormController {
 
 	private void handleListModel(HttpServletRequest request, ModelMap model ) {
 
-		realPath = request.getSession().getServletContext().getRealPath("/");
+		realPath = CustomizeCssUtils.getAppPath(request.getSession());
 
 		File dir = new File(realPath);
 		getCsFiles(dir, lastRecursionToogle);
 
-		//model.addAttribute("currentCssFile", currentFile);
 		model.addAttribute("cssFileMap", cssFileMap);
 	}
 

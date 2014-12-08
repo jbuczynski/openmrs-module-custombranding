@@ -2,33 +2,22 @@ package org.openmrs.module.custombranding;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.util.OpenmrsConstants;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 
 public class CustomizeCssUtils {
-
 
 	public static void overrideDefaultCssFilesWithCustom() throws IOException {
 		Log log = LogFactory.getLog(CustomizeCssUtils.class);
 
 		CssFileService service = Context.getService(CssFileService.class);
 
-			List<CssFile> allDbFiles = (List<CssFile>) service.getAllCssFiles();
-
+		List<CssFile> allDbFiles = (List<CssFile>) service.getAllCssFiles();
 
 		for(CssFile cssf : allDbFiles) {
 
@@ -43,11 +32,7 @@ public class CustomizeCssUtils {
 		}
 	}
 
-    public static void setServerLocation() {
-
-      String realPath = Context.getUserContext().getServletContext().getRealPath("/");
-      GlobalProperty gp = new GlobalProperty();
-      gp.setPropertyValue(realPath);
-      Context.getAdministrationService().saveGlobalProperty(gp);
-    }
+	public static String getAppPath(HttpSession session) {
+		return session.getServletContext().getRealPath("/");
+	}
 }

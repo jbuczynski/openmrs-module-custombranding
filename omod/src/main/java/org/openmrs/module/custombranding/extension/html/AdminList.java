@@ -66,7 +66,6 @@ public class AdminList extends AdministrationSectionExt {
         HashMap<String, String> links = new LinkedHashMap<String, String>();
         links.put("/module/custombranding/custombranding.form", "custombranding.link.name");
 		links.put("/module/custombranding/customizeCssEdit.form", "custombranding.link.css");
-		links.put("/module/custombranding/custombrandingAdminPage.form", "custombranding.link.admin");
         return links;
     }
 	
