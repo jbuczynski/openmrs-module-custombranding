@@ -14,20 +14,24 @@
 package org.openmrs.module.custombranding;
 
 
-import org.apache.commons.logging.Log; 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
+
+import java.io.IOException;
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.
  */
-public class CustomBrandingActivator implements ModuleActivator {
+public class CustomBrandingActivator extends BaseModuleActivator {
 	
 	protected Log log = LogFactory.getLog(getClass());
 		
 	/**
 	 * @see ModuleActivator#willRefreshContext()
 	 */
+	@Override
 	public void willRefreshContext() {
 		log.info("Refreshing Custom Branding Module");
 	}
@@ -35,13 +39,20 @@ public class CustomBrandingActivator implements ModuleActivator {
 	/**
 	 * @see ModuleActivator#contextRefreshed()
 	 */
+	@Override
 	public void contextRefreshed() {
 		log.info("Custom Branding Module refreshed");
+		try {
+			CustomizeCssUtils.overrideDefaultCssFilesWithCustom();
+		} catch (IOException e) {
+			log.fatal("Error occurs while overriding existing css files from database,  Error was:", e);
+		}
 	}
 	
 	/**
 	 * @see ModuleActivator#willStart()
 	 */
+	@Override
 	public void willStart() {
 		log.info("Starting Custom Branding Module");
 	}
@@ -49,13 +60,13 @@ public class CustomBrandingActivator implements ModuleActivator {
 	/**
 	 * @see ModuleActivator#started()
 	 */
-	public void started() {
-		log.info("Custom Branding Module started");
-	}
+	@Override
+	public void started() { log.info("Custom Branding Module started"); }
 	
 	/**
 	 * @see ModuleActivator#willStop()
 	 */
+	@Override
 	public void willStop() {
 		log.info("Stopping Custom Branding Module");
 	}
@@ -63,6 +74,7 @@ public class CustomBrandingActivator implements ModuleActivator {
 	/**
 	 * @see ModuleActivator#stopped()
 	 */
+	@Override
 	public void stopped() {
 		log.info("Custom Branding Module stopped");
 	}

@@ -63,10 +63,9 @@ public class AdminList extends AdministrationSectionExt {
 	 */
 	@Override
     public Map<String, String> getLinks() {
-        HashMap<String, String> links = new HashMap<String, String>();
-        Thread.currentThread().setContextClassLoader(OpenmrsClassLoader.getInstance());
+        HashMap<String, String> links = new LinkedHashMap<String, String>();
         links.put("/module/custombranding/custombranding.form", "custombranding.link.name");
-        
+		links.put("/module/custombranding/customizeCssEdit.form", "custombranding.link.css");
         return links;
     }
 	
