@@ -65,6 +65,8 @@ public class CustomBrandingActivator extends BaseModuleActivator {
 	@Override
 	public void started() {
 		log.info("Custom Branding Module started");
+
+
 	}
 	
 	/**

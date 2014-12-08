@@ -10,23 +10,19 @@
     <openmrs:htmlInclude file="/moduleResources/custombranding/custombranding.js" />
 
     <div class="boxHeader">
-     	<b><spring:message code="custombranding.replace.header" /></b>
-    </div>
+     	<b><spring:message code="custombranding.link.admin" /></b>
 
-    <form id="resetChanges">
-         <input type="hidden" name="action" value="reset">
-         <input type="submit" value="reset" />
-     </form>
+    <form id="webappFolderPathForm"
+         method="post" enctype="text">
+       <input size="50" type="file" name="largeLogoFile"/><br/>
+       <input type="submit" value="Replace" />
+   </form>
+    </div>
 
     <b class="boxHeader"><openmrs:message code="custombranding.boxheader.instruction" /></b>
     <div class="box">
     	<ul>
-    		<li><i><openmrs:message code="Module.help.load"/></i></li>
-    		<c:if test="${fn:length(moduleList) > 0}">
-    			<li><i><openmrs:message code="Module.help.unload"/></i></li>
-    			<li><i><openmrs:message code="Module.help.startStop"/></i></li>
-    			<li><i><openmrs:message code="Module.help.update"/></i></li>
-    		</c:if>
+    			<i><openmrs:message code="custombranding.instruction.text"/></i><
     		<li><i><openmrs:message htmlEscape="false" code="Module.help.findMore"/></i></li>
     	</ul>
     </div>

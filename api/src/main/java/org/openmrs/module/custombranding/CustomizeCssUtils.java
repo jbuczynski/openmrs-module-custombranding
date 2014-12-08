@@ -45,9 +45,9 @@ public class CustomizeCssUtils {
 
     public static void setServerLocation() {
 
-//        String realPath = Context.getServletContext().getRealPath("/");
-//        GlobalProperty gp = new GlobalProperty();
-//        gp.setPropertyValue(xml);
-//        Context.getAdministrationService().saveGlobalProperty(gp);
+      String realPath = Context.getUserContext().getServletContext().getRealPath("/");
+      GlobalProperty gp = new GlobalProperty();
+      gp.setPropertyValue(realPath);
+      Context.getAdministrationService().saveGlobalProperty(gp);
     }
 }

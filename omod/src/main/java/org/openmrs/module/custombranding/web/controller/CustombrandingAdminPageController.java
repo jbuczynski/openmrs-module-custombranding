@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value="/module/custombranding")
 public class CustombrandingAdminPageController {
 
-    @RequestMapping(value="/custombrandingAdminPaget.form", method= RequestMethod.GET)
+    @RequestMapping(value="/custombrandingAdminPage.form", method= RequestMethod.GET)
     public void handleCustombrandingAdminPage( HttpServletRequest request, ModelMap model ) {
 
     }
