@@ -126,8 +126,8 @@ public class CustomBrandingController extends SimpleFormController {
     @Override
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
         String fileSysLocation = request.getRealPath("/");
-        String messageFileLocation = fileSysLocation + File.separator + "WEB-INF" + File.separator + "messages.properties";
-        String messageNewLocation = fileSysLocation + File.separator + "images" + File.separator + "messages.properties";
+        String messageFileLocation = fileSysLocation  + "WEB-INF" + File.separator + "messages.properties";
+        String messageNewLocation = fileSysLocation + "images" + File.separator + "messages.properties";
         FileUtils.copyFile(new File(messageFileLocation), new File(messageNewLocation));
 
         Properties themeProps = CustomBrandingUtils.getThemeProperties(request);
