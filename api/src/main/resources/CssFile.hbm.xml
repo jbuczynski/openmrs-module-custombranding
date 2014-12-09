@@ -11,7 +11,7 @@
 		<discriminator column="cssFile_id" insert="false" />
 		<property name="name" type="java.lang.String" column="name" length="255" unique="true" />
 		<property name="content" type="java.lang.String" column="content" length="65535"/>
-		<property name="nameAndPath" type="java.lang.String" column="nameAndPath" length="2048"/>
+		<property name="nameAndPath" type="java.lang.String" column="nameAndPath" length="2048" unique="true"/>
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
 	</class>
 </hibernate-mapping>

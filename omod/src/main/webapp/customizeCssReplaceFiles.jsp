@@ -31,9 +31,9 @@
                  </td>
             </tr>
         </table>
-
+        <div ><p id="messageBox" /></div>
     </div>
-      <div ><p id="messageBox" /><div>
+     <br>
     <div class="box">
          <input type="submit" value="Replace" onclick="readSingleFile('uploadCssFile')" style="display: block;  margin-left: auto; margin-right: auto" />
     </div>

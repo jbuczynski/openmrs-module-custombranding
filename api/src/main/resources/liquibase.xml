@@ -7,7 +7,7 @@
 		See http://www.liquibase.org/manual/home#available_database_refactorings
 		for a list of supported elements and attributes
 	-->
-	<changeSet author="jbuczynski" id="2014112810232">
+	<changeSet author="jbuczynski" id="2014112810236">
 
 		<preConditions onFail="MARK_RAN">
 			<not>
@@ -23,9 +23,14 @@
 			</column>
 			<column name="name" type="varchar(255)" />
 			<column name="content" type="mediumtext" />
-			<column name="nameAndPath" type="varchar(2048)" />
+			<column name="nameAndPath" type="varchar(2048)"/>
 			<column name="uuid" type="char(38)" />
 		</createTable>
+
+		<!--<addUniqueConstraint
+				columnNames="nameAndPath"
+				constraintName="CssFile_unique_nameAndPath"
+				tableName="custombranding_CssFile"/>-->
 
 	</changeSet>
 </databaseChangeLog>

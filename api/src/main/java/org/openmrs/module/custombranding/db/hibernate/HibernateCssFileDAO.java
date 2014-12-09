@@ -52,7 +52,7 @@ public class HibernateCssFileDAO implements CssFileDAO {
 
 	@Override
 	public CssFile saveCssFile(CssFile CssFile) {
-		sessionFactory.getCurrentSession().saveOrUpdate(CssFile); //merging two different objects with same id in session
+		sessionFactory.getCurrentSession().saveOrUpdate(CssFile);
 		return CssFile;
 	}
 

@@ -28,6 +28,7 @@
              </td>
         </tr>
     </table>
+    </div>
      <br>
     <div >
          <table>
