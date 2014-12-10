@@ -5,8 +5,6 @@
     <%@ include file="localHeader.jsp" %>
 
     <openmrs:htmlInclude file="/moduleResources/custombranding/custombranding.js" />
-    <openmrs:htmlInclude file="/moduleResources/custombranding/jquery-2.1.1.js" />
-    <script>$(document).ready(function() {  $("#messageBox").text(""); });</script>
 
     <div class="boxHeader">
         <span style="float: right">

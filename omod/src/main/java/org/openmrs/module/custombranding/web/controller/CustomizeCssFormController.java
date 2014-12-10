@@ -107,7 +107,7 @@ public class CustomizeCssFormController {
 		return redirect;
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private String updateCssFile( HttpServletRequest request) {
 
 		CssFileService fileService = Context.getService(CssFileService.class);

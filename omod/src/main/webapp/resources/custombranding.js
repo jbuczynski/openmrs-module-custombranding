@@ -1,15 +1,15 @@
     function getFileContent() {
 
-       var text = $("#cssFilesList option:selected").attr("title");
+       var text = jQuery("#cssFilesList option:selected").attr("title");
 
        function succes(response) {
-              $('#contentBox').text(response);
+              jQuery('#contentBox').text(response);
        }
        ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', succes, null);
     }
     function setFileProps() {
 
-        var text = $("#cssFilesList option:selected").attr("title");
+        var text = jQuery("#cssFilesList option:selected").attr("title");
 
         ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', null, null);
     }
@@ -40,7 +40,7 @@
                       }
 
         if(action === "replaceCssFile" ){
-            if( $("#cssFilesList option:selected").text() !== '' && $("#uploadCssFile").val() !== "" && optionalFileContent !== undefined) {
+            if( jQuery("#cssFilesList option:selected").text() !== '' && jQuery("#uploadCssFile").val() !== "" && optionalFileContent !== undefined) {
 
 
                 var data = {
@@ -54,7 +54,7 @@
                 $("#messageBox").text("You need to choose css file to replace with pointed by you");
             }
 
-        } else if( $("#cssFilesList option:selected").text() !== '') {
+        } else if( jQuery("#cssFilesList option:selected").text() !== '') {
                 var data = {
                     'action': action,
                     'content':   document.getElementById('contentBox').value
@@ -65,7 +65,7 @@
         }
     }
     function ajaxRequest_Post( _url, _dataType, _async, _data, _succes, _error) {
-         $.ajax({
+         jQuery.ajax({
             type: "POST",
             url: _url,
             dataType: _dataType,
@@ -77,7 +77,7 @@
     }
 
     function ajaxRequest_Get( _url, _dataType, _succes, _error) {
-        $.ajax({
+        jQuery.ajax({
              type: "GET",
              url: _url,
              dataType: _dataType,
@@ -101,17 +101,6 @@
           reader.readAsText(file);
 
     }
-
-    function validateReplacing() {
-
-    }
-
-     function validateEditing() {
-
-    }
-
-
-
 
 
 
