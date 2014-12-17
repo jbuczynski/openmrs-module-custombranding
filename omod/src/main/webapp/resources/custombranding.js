@@ -20,7 +20,7 @@
 
             document.getElementById(elementId).options.length = 0;
 
-            jQuery.each( $.parseJSON(response), function(i, val) {
+            jQuery.each( jQuery.parseJSON(response), function(i, val) {
                 var x = document.getElementById(elementId);
                 var option = document.createElement("option");
                 option.text = val;
