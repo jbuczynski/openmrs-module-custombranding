@@ -69,20 +69,4 @@ public interface CssFileDAO {
      */
     public List<CssFile> getAllCssFiles();
 
-	/**
-	 * Given a uuid and a class, fetch the OpenMRS object associated with that uuid
-	 */
-	public OpenmrsObject getItemByUuid(Class<? extends OpenmrsObject> type, String uuid);
-	 
-	/**
-	 * Given an id and a class, fetch the OpenMRS object associated with that id
-	 */
-	public OpenmrsObject getItemById(Class<? extends OpenmrsObject> type, Integer id);
-	
-	/**
-	 * Given a name and a class, fetch the OpenMRS object associated with that name
-	 */
-	public OpenmrsObject getItemByName(Class<? extends OpenmrsMetadata> type, String name);
-
-
 }

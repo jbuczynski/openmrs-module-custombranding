@@ -32,7 +32,7 @@
          <table>
              <tr>
                  <td>
-                     <button onclick="dbRequest('updateCssFile')">Save</button>
+                     <button onclick="dbRequest('updateCssFile' )">Save</button>
                  </td>
                  <td>
                       <form id="validate">

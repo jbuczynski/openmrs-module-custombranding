@@ -7,23 +7,23 @@
 		See http://www.liquibase.org/manual/home#available_database_refactorings
 		for a list of supported elements and attributes
 	-->
-	<changeSet author="jbuczynski" id="2014112810236">
+	<changeSet author="jbuczynski" id="2014112810239">
 
 		<preConditions onFail="MARK_RAN">
 			<not>
-				<tableExists tableName="custombranding_CssFile"/>
+				<tableExists tableName="custombranding_css_file"/>
 			</not>
 		</preConditions>
 
 		<comment>Create the CssFile table</comment>
 
-		<createTable tableName="custombranding_CssFile">
-			<column autoIncrement="true" name="cssFile_id" type="int">
+		<createTable tableName="custombranding_css_file">
+			<column autoIncrement="true" name="css_file_id" type="int">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="name" type="varchar(255)" />
 			<column name="content" type="mediumtext" />
-			<column name="nameAndPath" type="varchar(2048)"/>
+			<column name="name_and_path" type="varchar(2048)"/>
 			<column name="uuid" type="char(38)" />
 		</createTable>
 

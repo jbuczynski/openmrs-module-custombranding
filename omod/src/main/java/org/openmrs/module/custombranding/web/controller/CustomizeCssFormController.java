@@ -8,6 +8,7 @@ import org.openmrs.module.custombranding.CssFile;
 import org.openmrs.module.custombranding.CssFileService;
 import org.openmrs.module.custombranding.CustomizeCssUtils;
 import org.openmrs.web.WebConstants;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,31 +31,32 @@ import java.util.Queue;
 
 
 @Controller
+@Scope("session")
 @RequestMapping(value="/module/custombranding")
 public class CustomizeCssFormController {
 
 	protected final Log log = LogFactory.getLog(getClass());
-	private HashMap<String,String> cssFileMap;
-	private String realPath;
-	private CssFile currentFile = new CssFile();
-	private Boolean lastRecursionToogle = false;
-
 
     @RequestMapping(value="/customizeCssEdit.form", method=RequestMethod.GET)
 	public void handleCssEditing( HttpServletRequest request, ModelMap model ) {
+
 		handleListModel(request, model);
 	}
 
 	@RequestMapping(value="/customizeCssReplaceFiles.form", method=RequestMethod.GET)
 	public void handleCssReplacing(HttpServletRequest request, ModelMap model  ){
+
 		handleListModel(request, model);
 	}
 
 	@RequestMapping(value="/CssContent", method=RequestMethod.GET)
 	public @ResponseBody String getCssFileContent(@RequestParam(value="path", defaultValue="none") String path,
-												  HttpServletRequest request) throws IOException {
-
-		if(!path.equals("none") && cssFileMap.containsKey(path)) {
+												  @RequestParam(value="recursive", defaultValue="false") Boolean recursive,
+												  HttpServletRequest request
+												 ) throws IOException {
+		HashMap<String, String> tmpFilesMap = getCsFiles(new File(CustomizeCssUtils.getAppPath(request.getSession())), recursive);
+		path = path.trim();
+		if(!path.equals("none") && tmpFilesMap.containsKey(path)) {
 				return prepareContent(path);
 			} else {
 			MessageSourceService mss = Context.getMessageSourceService();
@@ -64,61 +66,82 @@ public class CustomizeCssFormController {
 	}
 
 	@RequestMapping(value="/SearchCssFiles", method=RequestMethod.GET)
-	public @ResponseBody Map<String, String> searchCssFiles( HttpServletRequest request)  {
+	public @ResponseBody Map<String, String> searchCssFiles( HttpServletRequest request, @RequestParam(value="recursive", defaultValue="false") Boolean recursive)  {
 
-		realPath = CustomizeCssUtils.getAppPath(request.getSession());
+		String realPath = CustomizeCssUtils.getAppPath(request.getSession());
 
         File dir = new File(realPath);
-		lastRecursionToogle = !lastRecursionToogle;
-		getCsFiles(dir, lastRecursionToogle);
 
-		return cssFileMap;
+		return getCsFiles(dir, recursive);
+
 	}
 
     @RequestMapping(value = "/dbRequest", method = RequestMethod.POST)
 	public @ResponseBody String dbRequest( HttpServletRequest request,
 								   @RequestParam(required = true, value = "action") String action,
-								   @RequestParam(required = false, value = "content") String content ) {
+								   @RequestParam(value="path", defaultValue = "none") String path,
+								   @RequestParam(value="content", defaultValue = "none") String content,
+								   @RequestParam(value="recursive", defaultValue = "false") Boolean recursive) {
 
+		HashMap<String, String> tmpFilesMap = getCsFiles(new File(CustomizeCssUtils.getAppPath(request.getSession())), recursive);
+        path = path.trim();
 		MessageSourceService mss = Context.getMessageSourceService();
 		String redirect = "/module/custombranding/customizeCssEdit.form";
-		if ( content == null) {
-			content = "";
-			log.warn("css file content never should be null");
-		}
-		currentFile.setContent(content);
 
-			if (!Context.isAuthenticated()) {
-				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.auth.required");
-				return null;
-			} else if (mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
-				redirect = updateCssFile(request);
-			} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
-				redirect = deleteCssFile(request);
-			} else if(mss.getMessage("custombranding.db.action.replaceCssFile").equals(action)) {
-				redirect = updateCssFile(request);
+		CssFile currentFile = null;
+		CssFileService fileService = Context.getService(CssFileService.class);
+
+		try {
+			currentFile = fileService.getCssFileByNameAndPath(path);
+			currentFile.setContent(content);
+			validateCF(currentFile);
+		} catch (org.hibernate.HibernateException e) {
+			log.error(e.getMessage());
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
+			return redirect;
+		} catch (Exception e) {
+			try {
+				currentFile = new CssFile();
+				currentFile.setName(tmpFilesMap.get(path));
+				currentFile.setNameAndPath(path);
+				currentFile.setContent(content);
+				validateCF(currentFile);
+			} catch (Exception ex) {
+				log.error(e.getMessage());
+				request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
+				return redirect;
 			}
+		}
+
+
+		if (!Context.isAuthenticated()) {
+			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
+			return null;
+		} else if (mss.getMessage("custombranding.db.action.updateCssFile").equals(action)) {
+			redirect = updateCssFile(request, currentFile);
+		} else if (mss.getMessage("custombranding.db.action.deleteCssFile").equals(action)) {
+			redirect = deleteCssFile(request, currentFile);
+		} else if(mss.getMessage("custombranding.db.action.replaceCssFile").equals(action)) {
+			redirect = updateCssFile(request, currentFile);
+		}
 
 		try {
 			CustomizeCssUtils.overrideDefaultCssFilesWithCustom();
 		}  catch (IOException e) {
 			log.error("Error while manipulating css files", e);
 		}
+
 		return redirect;
 	}
 
 
-	private String updateCssFile( HttpServletRequest request) {
+	private String updateCssFile( HttpServletRequest request, CssFile file) {
 
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
-			CssFile tmp = fileService.getCssFileByNameAndPath(currentFile.getNameAndPath());
-            if(tmp != null) {
-			    currentFile.setId(tmp.getId());
-            }
-			validateCF();
-			CssFile cssFile = fileService.mergeCssFile(currentFile);
+
+			CssFile cssFile = fileService.mergeCssFile(file);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.save.success");
 		} catch (org.hibernate.NonUniqueResultException e) {
 			request.getSession().setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "custombranding.db.save.failure");
@@ -133,13 +156,12 @@ public class CustomizeCssFormController {
 		return "/module/custombranding/customizeCssEdit.form";
 	}
 
-	private String deleteCssFile( HttpServletRequest request) {
+	private synchronized String deleteCssFile( HttpServletRequest request,CssFile file) {
 
 		CssFileService fileService = Context.getService(CssFileService.class);
 
 		try {
-			validateCF();
-			fileService.purgeCssFile(currentFile);
+			fileService.purgeCssFile(file);
 			request.getSession().setAttribute(WebConstants.OPENMRS_MSG_ATTR, "custombranding.db.delete.success");
 		}
 		catch (Exception ex) {
@@ -151,7 +173,9 @@ public class CustomizeCssFormController {
 
 	}
 
-	private String prepareContent(String path) throws IOException {
+	private  String prepareContent(String path) throws IOException {
+
+		//CssFile currentFile = new CssFile();
 
 		BufferedReader br = new BufferedReader(new FileReader(path));
 
@@ -165,17 +189,14 @@ public class CustomizeCssFormController {
 		}
 		String content = sb.toString();
 
-		currentFile.setName(cssFileMap.get(path));
-		currentFile.setContent(content);
-		currentFile.setNameAndPath(path);
 		br.close();
 
 		return content;
 	}
 
-	private void getCsFiles(File dir, Boolean recursive) {
+	private HashMap<String, String> getCsFiles(File dir, Boolean recursive) {
 
-		cssFileMap = new HashMap<String, String>();
+		HashMap tmp = new HashMap<String, String>();
 
 		FileFilter urlFilter = new FileFilter() {
 			@Override
@@ -196,23 +217,26 @@ public class CustomizeCssFormController {
 					dirs.add(f);
 				} else if (f.isFile()) {
 					allFiles.add(f);
-					cssFileMap.put(f.getAbsolutePath(), f.getName());
+					tmp.put(f.getAbsolutePath(), f.getName());
 				}
 			}
 		}
+		return tmp;
 	}
 
 	private void handleListModel(HttpServletRequest request, ModelMap model ) {
 
-		realPath = CustomizeCssUtils.getAppPath(request.getSession());
+		HashMap<String, String> cssFileMap;
+		String realPath = CustomizeCssUtils.getAppPath(request.getSession());
 
 		File dir = new File(realPath);
-		getCsFiles(dir, lastRecursionToogle);
+		cssFileMap = getCsFiles(dir, false);
 
 		model.addAttribute("cssFileMap", cssFileMap);
+
 	}
 
-	private void validateCF() throws Exception{
+	private synchronized void validateCF(CssFile currentFile) throws Exception{
 
 		if(currentFile.getName() == null ||  currentFile.getContent() == null || currentFile.getNameAndPath() == null) {
 			throw new Exception("css file validation exception, any field cannot be null");

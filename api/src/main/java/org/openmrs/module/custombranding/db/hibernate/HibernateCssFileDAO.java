@@ -2,12 +2,8 @@ package org.openmrs.module.custombranding.db.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Expression;
-import org.openmrs.OpenmrsMetadata;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.module.custombranding.CssFile;
 import org.openmrs.module.custombranding.db.CssFileDAO;
 
@@ -73,48 +69,4 @@ public class HibernateCssFileDAO implements CssFileDAO {
 		return sessionFactory.getCurrentSession().createCriteria(CssFile.class).list();
 	}
 
-	@Override
-	public OpenmrsObject getItemByUuid(Class<? extends OpenmrsObject> type, String uuid) {
-		try {
-			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
-			criteria.add(Expression.eq("uuid", uuid));
-			OpenmrsObject result = (OpenmrsObject) criteria.uniqueResult();
-			return result;
-		}
-		catch(Exception e) {
-			log.error("Error fetching item by uuid:" + e);
-			return null;
-		}
-	}
-
-
-	@Override
-	public OpenmrsObject getItemById(Class<? extends OpenmrsObject> type, Integer id) {
-		try {
-			String idProperty = sessionFactory.getClassMetadata(type).getIdentifierPropertyName();
-			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
-			criteria.add(Expression.eq(idProperty, id));
-			OpenmrsObject result = (OpenmrsObject) criteria.uniqueResult();
-			return result;
-		}
-		catch(Exception e) {
-			log.error("Error fetching item by id:" + e);
-			return null;
-		}
-	}
-
-	@Override
-	public OpenmrsObject getItemByName(Class<? extends OpenmrsMetadata> type, String name) {
-		// we use a try/catch here to handle oddities like "Role" which don't have a directly-referenceable name property
-		try {
-			Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
-			criteria.add(Expression.eq("name", name));
-			OpenmrsObject result = (OpenmrsObject) criteria.uniqueResult();
-			return result;
-		}
-		catch(Exception e) {
-			log.error("Error fetching item by name:" + e);
-			return null;
-		}
-	}
 }

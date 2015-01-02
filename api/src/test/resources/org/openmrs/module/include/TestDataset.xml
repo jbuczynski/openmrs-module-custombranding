@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-	<custombranding_CssFile cssFile_id="1" name="openmrs_css_file1.css" nameAndPath="/home/user/tomcat/webapps/openmrs/openmrs_css_file1.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee40812014"/>
-	<custombranding_CssFile cssFile_id="2" name="openmrs_css_file2.css" nameAndPath="/home/user/tomcat/webapps/openmrs/openmrs_css_file2.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee50812014"/>
-	<custombranding_CssFile cssFile_id="3" name="openmrs_css_file3.css" nameAndPath="/home/user/tomcat/webapps/openmrs/openmrs_css_file3.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee60812014"/>
-	<custombranding_CssFile cssFile_id="4" name="openmrs_css_file4.css" nameAndPath="/home/user/tomcat/webapps/openmrs/openmrs_css_file4.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee70812014"/>
+	<custombranding_css_file css_file_id="1" name="openmrs_css_file1.css" name_and_path="/home/user/tomcat/webapps/openmrs/openmrs_css_file1.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee40812014"/>
+	<custombranding_css_file css_file_id="2" name="openmrs_css_file2.css" name_and_path="/home/user/tomcat/webapps/openmrs/openmrs_css_file2.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee50812014"/>
+	<custombranding_css_file css_file_id="3" name="openmrs_css_file3.css" name_and_path="/home/user/tomcat/webapps/openmrs/openmrs_css_file3.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee60812014"/>
+	<custombranding_css_file css_file_id="4" name="openmrs_css_file4.css" name_and_path="/home/user/tomcat/webapps/openmrs/openmrs_css_file4.css" content="fasgfsadfsd sfuhsdfulhdsuahsdykagfsdkaygfsdgfksadgfysd" uuid="6cbc3f1a-0b69-4f93-8865-f7ee70812014"/>
 
 </dataset>

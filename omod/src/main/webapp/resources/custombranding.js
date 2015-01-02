@@ -1,17 +1,21 @@
-    function getFileContent() {
+    var lastRecursionToogle = false;
 
-       var text = jQuery("#cssFilesList option:selected").attr("title");
+    function getFileContent(currentFile) {
+
+       var text = getSelectedItemPath();
 
        function succes(response) {
               jQuery('#contentBox').text(response);
        }
-       ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', succes, null);
+
+       ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text + "&recursive=" + lastRecursionToogle, "text", succes, null);
+
     }
     function setFileProps() {
 
-        var text = jQuery("#cssFilesList option:selected").attr("title");
+        var text = getSelectedItemPath();
 
-        ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text, 'text', null, null);
+        ajaxRequest_Get("/openmrs/module/custombranding/CssContent.form?path=" + text + "&" + lastRecursionToogle, 'text', null, null);
     }
 
     function toogleRecursiveSearchingAndList(elementId) {
@@ -29,8 +33,8 @@
                 x.add(option);
             });
         }
-
-       ajaxRequest_Get("/openmrs/module/custombranding/SearchCssFiles.form", 'text', succes, null);
+        lastRecursionToogle = !lastRecursionToogle;
+       ajaxRequest_Get("/openmrs/module/custombranding/SearchCssFiles.form?recursive=" + lastRecursionToogle, 'text', succes, null);
     }
 
     function dbRequest(action, optionalFileContent) {
@@ -38,14 +42,16 @@
         function func() {
                         location.reload(true);
                       }
-
+        var path = getSelectedItemPath();
         if(action === "replaceCssFile" ){
-            if( jQuery("#cssFilesList option:selected").text() !== '' && jQuery("#uploadCssFile").val() !== "" && optionalFileContent !== undefined) {
+            if( path !== '' && jQuery("#uploadCssFile").val() !== "" && optionalFileContent !== undefined) {
 
 
                 var data = {
                     'action': action,
-                    'content': optionalFileContent
+                    'path': path,
+                    'content': optionalFileContent,
+                    'recursive': lastRecursionToogle
                 }
 
                 ajaxRequest_Post( "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
@@ -54,10 +60,12 @@
                 $("#messageBox").text("You need to choose css file to replace with pointed by you");
             }
 
-        } else if( jQuery("#cssFilesList option:selected").text() !== '') {
+        } else if( path !== '') {
                 var data = {
                     'action': action,
-                    'content':   document.getElementById('contentBox').value
+                    'path': path,
+                    'content': document.getElementById('contentBox').value,
+                    'recursive': lastRecursionToogle
                     }
 
                  ajaxRequest_Post( "/openmrs/module/custombranding/dbRequest.form", 'text', true, data, func, func);
@@ -100,6 +108,9 @@
           };
           reader.readAsText(file);
 
+    }
+    function getSelectedItemPath() {
+        return jQuery('#cssFilesList option:selected').attr("title");
     }
 
 

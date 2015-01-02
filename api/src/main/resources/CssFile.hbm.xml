@@ -4,14 +4,14 @@
 		"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
 <hibernate-mapping package="org.openmrs.module.custombranding">
 	    <class name="CssFile"
-		   table="custombranding_CssFile">
-		<id name="cssFileId" type="int" column="cssFile_id" unsaved-value="0">
+		   table="custombranding_css_file">
+		<id name="cssFileId" type="int" column="css_file_id" unsaved-value="0">
 			<generator class="native" />
 		</id>
-		<discriminator column="cssFile_id" insert="false" />
+		<discriminator column="css_file_id" insert="false" />
 		<property name="name" type="java.lang.String" column="name" length="255" unique="true" />
 		<property name="content" type="java.lang.String" column="content" length="65535"/>
-		<property name="nameAndPath" type="java.lang.String" column="nameAndPath" length="2048" unique="true"/>
+		<property name="nameAndPath" type="java.lang.String" column="name_and_path" length="2048" unique="true"/>
 		<property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
 	</class>
 </hibernate-mapping>

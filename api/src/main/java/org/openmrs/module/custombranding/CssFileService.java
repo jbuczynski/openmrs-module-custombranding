@@ -11,7 +11,7 @@ import java.util.List;
  * Defines the services provided by the CssFile Entry module
  *
  */
-@Transactional
+
 public interface CssFileService extends OpenmrsService {
 
 	/**
@@ -20,7 +20,6 @@ public interface CssFileService extends OpenmrsService {
 	 * @param id
 	 * @return the CssFile with the specified id
 	 */
-	@Transactional(readOnly=true)
 	public CssFile getCssFile(Integer id);
 
 	/**
@@ -30,7 +29,6 @@ public interface CssFileService extends OpenmrsService {
 	 * @return the CssFile with the given uuid
 	 *
 	 */
-	@Transactional(readOnly=true)
 	public CssFile getCssFileByUuid(String uuid);
 
 	/**
@@ -40,18 +38,16 @@ public interface CssFileService extends OpenmrsService {
 	 * @return the CssFile with the given name
 	 *
 	 */
-	@Transactional(readOnly=true)
 	public CssFile getCssFileByName(String name);
 
-    /**
-     * Retrieves the CssFile with the specified nameAndPath
-     *
-     * @param uuid
-     * @return the CssFile with the given nameAndPath
-     *
-     */
-    @Transactional(readOnly=true)
-    public CssFile getCssFileByNameAndPath(String nameAndPath);
+	/**
+	 * Retrieves the CssFile with the specified nameAndPath
+	 *
+	 * @param uuid
+	 * @return the CssFile with the given nameAndPath
+	 *
+	 */
+	public CssFile getCssFileByNameAndPath(String nameAndPath);
 
 	/**
 	 * Retrieves all CssFiles in the system
@@ -59,7 +55,6 @@ public interface CssFileService extends OpenmrsService {
 	 * @return a list of all CssFiles in the system
 	 * @should return all CssFiles
 	 */
-	@Transactional(readOnly=true)
 	public List<CssFile> getAllCssFiles();
 
 	/**
@@ -68,7 +63,6 @@ public interface CssFileService extends OpenmrsService {
 	 * @param CssFile the CssFile to save
 	 * @return the CssFile saved
 	 */
-	@Transactional
 	public CssFile saveCssFile(CssFile file);
 
 	/**
@@ -77,7 +71,6 @@ public interface CssFileService extends OpenmrsService {
 	 * @param CssFile the CssFile to save
 	 * @return the CssFile saved
 	 */
-	@Transactional
 	public CssFile mergeCssFile(CssFile file);
 
 	/**
@@ -85,19 +78,7 @@ public interface CssFileService extends OpenmrsService {
 	 *
 	 * @param CssFile the CssFile to purge
 	 */
-	@Transactional
 	public void purgeCssFile(CssFile CssFile);
 
 
-	public OpenmrsObject getItemByUuid(Class<? extends OpenmrsObject> type, String uuid);
-
-	/**
-	 * Given an id and a class, fetch the OpenMRS object associated with that id
-	 */
-	public OpenmrsObject getItemById(Class<? extends OpenmrsObject> type, Integer id);
-
-	/**
-	 * Given a name and a class, fetch the OpenMRS object associated with that id
-	 */
-	public OpenmrsObject getItemByName(Class<? extends OpenmrsMetadata> type, String name);
 }
